@@ -1,0 +1,13 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Test{% endblock %}
+
+
+{% block content %}
+    {% for c in cart %}
+        <tr>
+            <td>{{ c.item.price }}</td>
+            <td> color, etc.</td>
+        </tr>
+    {% endfor %}
+{% endblock %}

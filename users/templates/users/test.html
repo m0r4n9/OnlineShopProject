@@ -1,0 +1,28 @@
+{% extends 'users/layoutProfile.html' %}
+
+{% block profileContent %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="wrapper-person">
+            <div class="person-information">
+                <label class="person-label" for="last-name">Имя</label>
+                {{ form.first_name }}
+            </div>
+            <div class="person-information">
+                <label class="person-label" for="first-name">Фамилия</label>
+                {{ form.last_name }}
+            </div>
+        </div>
+        <div style="margin-top: 30px">
+            <div class="person-information" style="display: flex; justify-content: center">
+                <div class="person-description-email">
+                    <label for="email" class="person-label" style="margin-top: 15px">Почта</label>
+                    {{ form.email }}
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">Сохранить?</button>
+        <a style="display: block; color: black; list-style: none; text-decoration: none; margin-top: 10px" href="{% url 'users:profile' %}">Отмена</a>
+    </form>
+{% endblock %}

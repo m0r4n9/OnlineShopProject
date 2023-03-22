@@ -1,0 +1,224 @@
+body {
+    background: #F2F2F2;
+    font-family: GraphikLCG, sans-serif;
+}
+
+.wrapper-catalog {
+    display: flex;
+    flex-wrap: wrap;
+    width: 60rem;
+    /*width: 10px;*/
+    margin: 10px auto;
+}
+
+.card {
+    border: none;
+    margin: 5px;
+    padding: 5px;
+    transition: all .3s;
+    background: #F2F2F2;
+}
+
+
+.card a {
+    margin-top: 10px;
+}
+
+.card:hover {
+    background-color: rgba(128, 128, 128, 0.11);
+}
+
+.wrapper-detail {
+    display: flex;
+    justify-content: center;
+    padding-top: 45px;
+    background: #F2F2F2;
+    height: 100vh;
+}
+
+.right-menu {
+    margin: 30px 0 0 15px;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    background: white;
+    width: 400px;
+    height: 70vh;
+}
+
+.detail_mainImg {
+    max-width: 600px;
+    max-height: 600px;
+
+    min-width: 450px;
+    min-height: 450px;
+
+    object-fit: cover;
+}
+
+
+.detail__text {
+    font-family: GraphikLCG, sans-serif;;
+    margin-top: 15px;
+}
+
+.detail__text::after {
+    content: '';
+    display: block;
+    margin: 0 auto;
+    width: 80%;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.16);
+}
+
+.detail__title {
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.detail__description {
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    font-weight: 250;
+}
+
+
+.detail__available {
+    margin-top: 25px;
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+.detail__available span {
+    font-weight: 500;
+    font-size: 1.4rem;
+}
+
+
+.detail__price {
+    margin-top: 15px;
+}
+
+.detail__textPrice {
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+}
+
+
+.detail__price button {
+    width: 70%;
+    font-size: .9rem;
+}
+
+.detail__price button span {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: .8rem;
+}
+
+
+.detail__list {
+    margin-top: 25px;
+}
+
+.detail__list ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: start;
+
+    list-style: none;
+}
+
+
+.detail__list ul div::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.16);
+}
+
+.detail__text ul li {
+    margin-left: 20px;
+}
+
+.detail__list ul span {
+    color: rgba(0, 0, 0, 0.4);
+    font-size: .8rem;
+    font-weight: 300;
+    margin: 0;
+}
+
+.detail__list ul p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+
+.alert-catalog {
+    margin: 60px auto;
+}
+
+.wrapper-profile {
+    width: 60vw;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.wrapper-person {
+    display: flex;
+    justify-content: center;
+}
+
+.person-information {
+    position: relative;
+    padding: 10px;
+}
+
+.person-label {
+    display: block;
+    text-align: start;
+    margin: 0 0 5px 5px;
+}
+
+.person-input {
+    width: 230px;
+    height: 50px;
+    border: 1px solid rgba(128, 128, 128, 0.22);
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.person-input::placeholder {
+    font-size: .9rem;
+}
+
+
+.person-description-email:before {
+    content: 'Электронная почта';
+    margin-right: 315px;
+    font-weight: bold;
+}
+
+
+.cart-list {
+    position: absolute;
+    width: 350px;
+    height: 500px;
+    z-index: 5;
+    border-radius: 10px;
+    top: 35px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.38);
+}
+
+.cart-list.active {
+    display: flex;
+}
+
+.cart-list.disabled {
+    display: none;
+}

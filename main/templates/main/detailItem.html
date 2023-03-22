@@ -1,0 +1,60 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}{{ item.name_item }}{% endblock %}
+
+{% block content %}
+    <div class="wrapper-detail">
+        <div class="left-menu detail_cover-img">
+            {#            <div class="left-slider">#}
+            {#                <img src="{{ item.cart_img.url }}" alt="{{ item.name_item }}">#}
+            {#                <img src="{{ item.cart_img.url }}" alt="{{ item.name_item }}">#}
+            {#                <img src="{{ item.cart_img.url }}" alt="{{ item.name_item }}">#}
+            {#            </div>#}
+            <img class="detail_mainImg" src="{{ item.cart_img.url }}" alt="{{ item.name_item }}">
+        </div>
+
+        <div class="right-menu">
+            <div class="detail__text">
+                <p class="detail__title">{{ item.company.name_company }}</p>
+                <p class="detail__description">{{ item.name_item }}</p>
+                <p class="detail__available">Доступно: <br/><span>{{ item.inventory.quantity }}</span></p>
+            </div>
+            <div class="detail__price">
+                <p class="detail__textPrice">{{ item.price }} $</p>
+                <form action="{% url "cart:cart_add" item.id %}" method="post">
+                    {{ cart_product_form }}
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-dark btn-lg">Добавить в корзину<br/><span>размер N</span>
+                    </button>
+                </form>
+
+            </div>
+            <div class="detail__list">
+                <ul>
+                    <li>
+                        <div>
+                            <span>Название</span>
+                            <p>{{ item.name_item }}</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>Код товара</span>
+                            <p>{{ item.id }}</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <p>В избранное</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <p>Описание</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <ul>
+    {% for brand in brands_list %}
+        <li>
+        {{ brand.name_company }}
+        </li>
+    {% endfor %}
+
+    </ul>
+{% endblock %}
