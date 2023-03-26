@@ -4,7 +4,7 @@ from django.views.decorators.http import require_POST
 
 from .cart import Cart
 from .forms import CartAddProductForm
-from .models import Product, Company
+from .models import Product, Company, ProductPhotos
 
 
 # Create your views here.
@@ -35,9 +35,11 @@ def brands(request):
 
 def detail(request, item_id):
     item = Product.objects.get(pk=item_id)
+    photos_product = ProductPhotos.objects.select_related().all()
     cart_product_form = CartAddProductForm()
     return render(request, 'main/detailItem.html', {
         'item': item,
+        'photos': photos_product,
         'cart_product_form': cart_product_form,
     })
 

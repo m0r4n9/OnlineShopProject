@@ -5,14 +5,15 @@
 {% block content %}
     <div class="wrapper-detail">
         <div class="left-menu detail_cover-img">
-            {#            <div class="left-slider">#}
-            {#                <img src="{{ item.cart_img.url }}" alt="{{ item.name_item }}">#}
-            {#                <img src="{{ item.cart_img.url }}" alt="{{ item.name_item }}">#}
-            {#                <img src="{{ item.cart_img.url }}" alt="{{ item.name_item }}">#}
-            {#            </div>#}
-            <img class="detail_mainImg" src="{{ item.cart_img.url }}" alt="{{ item.name_item }}">
+            <div>
+                <img class="detail_mainImg" src="{{ item.image_prev.url }}" alt="">
+            </div>
+            {% for photo in photos %}
+                <div>
+                    <img class="detail_mainImg" src="{{ photo.images.url }}" alt="123">
+                </div>
+            {% endfor %}
         </div>
-
         <div class="right-menu">
             <div class="detail__text">
                 <p class="detail__title">{{ item.company.name_company }}</p>

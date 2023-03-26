@@ -22,7 +22,7 @@
             {% with product=item.product %}
                 <tr style="border: 1px solid gray">
                     <td style="padding: 0 20px">
-                        <img src="{{ product.cart_img.url }}" alt="{{ item.name_item }}"
+                        <img src="{{ product.image_prev.url }}" alt="{{ item.name_item }}"
                              style="width: 200px; height: 200px; object-fit: cover;">
                     </td>
                     <td style="font-size: 20px; width: 200px; padding: 0 20px">{{ product.name_item }}</td>
