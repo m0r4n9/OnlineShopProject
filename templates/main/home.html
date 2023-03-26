@@ -10,7 +10,7 @@
             <div class="wrapper__slider">
                 <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
-                        {% for product in products %}
+                        {% for product in recent_release %}
                             {% if forloop.counter == 1 %}
                                 <div class="carousel-item active" data-bs-interval="5000">
                                     <img src="{{ product.cart_img.url }}" class="d-block w-100" alt="...">

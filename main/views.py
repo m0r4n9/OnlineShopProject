@@ -1,23 +1,22 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
-from django.urls import reverse
 
 from .cart import Cart
 from .forms import CartAddProductForm
-from .models import Item, Company
+from .models import Product, Company
 
 
 # Create your views here.
 def home(request):
-    recent_release = Item.objects.order_by('-release')[:5]
+    recent_release = Product.objects.order_by('-release')[:5]
     return render(request, 'main/home.html', {
-        'products': recent_release
+        'recent_release': recent_release
     })
 
 
 def catalog(request):
-    items_list = Item.objects.all()
+    items_list = Product.objects.all()
     cart_product_form = CartAddProductForm()
     return render(request, 'main/catalog.html', {
         'items_list': items_list,
@@ -35,7 +34,7 @@ def brands(request):
 
 
 def detail(request, item_id):
-    item = Item.objects.get(pk=item_id)
+    item = Product.objects.get(pk=item_id)
     cart_product_form = CartAddProductForm()
     return render(request, 'main/detailItem.html', {
         'item': item,
@@ -46,7 +45,7 @@ def detail(request, item_id):
 @login_required(login_url='/users/login')
 def cart_add(request, product_id):
     cart = Cart(request)
-    product = get_object_or_404(Item, id=product_id)
+    product = get_object_or_404(Product, id=product_id)
     form = CartAddProductForm(request.POST)
     if form.is_valid():
         cd = form.cleaned_data
@@ -56,7 +55,7 @@ def cart_add(request, product_id):
 
 def cart_remove(request, product_id):
     cart = Cart(request)
-    product = get_object_or_404(Item, id=product_id)
+    product = get_object_or_404(Product, id=product_id)
     cart.remove(product)
     return redirect('main:cart')
     # return redirect(reverse('main:details_product', args=(product.id,)))
