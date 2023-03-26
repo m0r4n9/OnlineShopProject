@@ -7,7 +7,7 @@
         {% if items_list %}
             {% for item in items_list %}
                 <div class="card" style="width: 18rem"
-                     onclick="window.location.href = '{% url 'main:details' item.id %}'">
+                     onclick="window.location.href = '{% url 'main:details_product' item.id %}'">
                     <img class="card-img-top" src="{{ item.cart_img.url }}" alt="Card image cap">
                     <div class="card-body">
                         <div style="height: 4.5rem; overflow: hidden">
@@ -18,7 +18,7 @@
                         <span>Цена: {{ item.price }}$</span>
 
                         {#                        <a href="#" class="btn btn-dark btn-buy">Добавить в корзину</a>#}
-                        <form action="{% url "cart:cart_add" item.id %}" method="post">
+                        <form action="{% url "main:cart_add" item.id %}" method="post">
                             {{ cart_product_form }}
                             {% csrf_token %}
                             <button type="submit" class="btn btn-dark btn-buy">

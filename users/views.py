@@ -68,5 +68,5 @@ def profile_edit(request):
             return redirect('users:profile')
     else:
         form = UserEdit(instance=request.user)
-    return render(request, 'users/test.html', {'form': form})
+    return render(request, 'users/changePersonInformation.html', {'form': form})
 

@@ -21,7 +21,7 @@
             </div>
             <div class="detail__price">
                 <p class="detail__textPrice">{{ item.price }} $</p>
-                <form action="{% url "cart:cart_add" item.id %}" method="post">
+                <form action="{% url "main:cart_add" item.id %}" method="post">
                     {{ cart_product_form }}
                     {% csrf_token %}
                     <button type="submit" class="btn btn-dark btn-lg">Добавить в корзину<br/><span>размер N</span>

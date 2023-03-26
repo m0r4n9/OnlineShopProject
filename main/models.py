@@ -26,7 +26,7 @@ def max_value_current_year(value):
 
 
 class Company(models.Model):
-    name_company = models.CharField(max_length=250)
+    name_company = models.CharField(max_length=250, unique=True)
     country = models.CharField(max_length=50)
     date_foundation = models.PositiveIntegerField(default=current_year(),
                                                   validators=[MinValueValidator(1800), max_value_current_year])

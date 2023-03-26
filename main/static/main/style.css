@@ -174,15 +174,18 @@ body {
 }
 
 .person-information {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
     position: relative;
     padding: 10px;
 }
 
-.person-label {
-    display: block;
-    text-align: start;
-    margin: 0 0 5px 5px;
-}
+/*.person-label {*/
+/*    display: block;*/
+/*    text-align: start;*/
+/*    margin: 0 0 5px 5px;*/
+/*}*/
 
 .person-input {
     width: 230px;
@@ -196,12 +199,18 @@ body {
     font-size: .9rem;
 }
 
-
-.person-description-email:before {
-    content: 'Электронная почта';
-    margin-right: 315px;
-    font-weight: bold;
+.person-description-email label {
+    padding-left: 38px;
 }
+
+/*.person-description-email:before {*/
+/*    content: 'Контактная информация';*/
+/*    display: inline-block;*/
+/*    position: absolute;*/
+/*    left: 53px;*/
+/*    top: -5px;*/
+/*    font-weight: bold;*/
+/*}*/
 
 
 .cart-list {
