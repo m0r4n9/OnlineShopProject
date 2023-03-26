@@ -1,0 +1,26 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+    <div>
+        <div class="login-page">
+            <h2 style="text-align: center">Регистрация</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="login__fields">
+                    <label class="login__label" for="username">Имя пользователя: </label>
+                    {{ register_form.username }}
+                    {{ register_form.errors.username }}
+                </div>
+                <div class="login__fields">
+                    <label class=login__label" for="password1">Введите пароль:</label>
+                    {{ register_form.password1 }}
+                    <label for="password2">Повторите пароль:</label>
+                    {{ register_form.password2 }}
+                    {{ register_form.errors.password2 }}
+                </div>
+                <button class="btn btn-success login__button" type="submit">Зарегистрироваться?</button>
+            </form>
+            <a class="login__link-reg" href="{% url 'users:login_in' %}">У меня уже есть аккаунт</a>
+        </div>
+    </div>
+{% endblock %}

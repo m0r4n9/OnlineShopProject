@@ -5,30 +5,27 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 
 from users.forms import CustomUserCreationForm, UserEdit
-from users.models import CustomUser
-
 
 # Create your views here.
-
-def sign_up(request):
+def registration(request):
     context = {}
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            email = form.cleaned_data.get('email')
-            raw_password = form.cleaned_data.get('password')
-            account = authenticate(email=email, password=raw_password)
+            email = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            account = authenticate(username=email, password=raw_password)
             login(request, account)
-            return redirect("users:profile")
+            return redirect("users:profile_edit")
         else:
             context['registration_form'] = form
     else:
         form = CustomUserCreationForm()
-    return render(request=request, template_name="users/signup.html", context={"register_form": form})
+    return render(request=request, template_name="users/registration.html", context={"register_form": form})
 
 
-def sing_in(request):
+def login_in(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -54,7 +51,7 @@ def profile(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('users:signin')
+    return redirect('users:login_in')
 
 
 @login_required

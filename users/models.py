@@ -12,7 +12,7 @@ class CustomUser(AbstractUser):
     phone_no = models.CharField(max_length=10, unique=True)
     gender = models.BooleanField(default=False)
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.phone_no

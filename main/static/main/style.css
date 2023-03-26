@@ -231,3 +231,32 @@ body {
 .cart-list.disabled {
     display: none;
 }
+
+.login-page {
+    /*border: 1px solid black;*/
+    margin: 150px auto;
+    width: 500px;
+}
+
+.login__fields {
+    display: flex;
+    flex-direction: column;
+}
+
+.login__fields {
+    margin-top: 10px;
+}
+
+.login__fields input {
+    border: 1px solid rgba(0, 0, 0, 0.13);
+    border-radius: 5px;
+}
+
+.login__button {
+    margin-top: 20px;
+}
+
+.login__link-reg {
+    display: inline-block;
+    margin-top: 5px;
+}

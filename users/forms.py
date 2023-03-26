@@ -8,7 +8,7 @@ from .models import CustomUser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('phone_no', 'password1', 'password2')
+        fields = ('username', 'password1', 'password2')
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -26,7 +26,6 @@ class CustomUserChangeForm(UserChangeForm):
                 'class': 'login__phone'
             })
         }
-
 
 class UserEdit(forms.ModelForm):
     class Meta:
