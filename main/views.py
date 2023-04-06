@@ -4,7 +4,7 @@ from django.views.decorators.http import require_POST
 
 from .cart import Cart
 from .forms import CartAddProductForm
-from .models import Product, Company, ProductPhotos
+from .models import Product, Company, ProductPhotos, ProductSize
 
 
 # Create your views here.
@@ -23,6 +23,13 @@ def catalog(request):
         'cart_product_form': cart_product_form,
     })
 
+
+# def testRequest(request):
+#     products = Cart(request)
+#     items = Product.objects.filter(id=products.cart.id)
+#     return render(request, 'main/test.html', {
+#         'products': items
+#     })
 
 # @login_required
 def brands(request):

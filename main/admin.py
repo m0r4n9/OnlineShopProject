@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Company, Product, ProductPhotos, Category, SizeProduct
+from .models import Company, Product, ProductPhotos, Category, ProductSize
 
 
 class CompanyAdmin(admin.ModelAdmin):
@@ -19,27 +19,18 @@ class ProductPhotosInline(admin.StackedInline):
     extra = 0
 
 
-class CategoryInline(admin.StackedInline):
-    model = Category
-    max_num = 1
-    extra = 0
-
-
-class ProductSizeInline(admin.StackedInline):
-    model = SizeProduct
-    max_num = 10
-    extra = 0
+# class CategoryInline(admin.StackedInline):
+#     model = Category
+#     max_num = 1
+#     extra = 0
 
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name_item', 'category', 'gender']
-    inlines = [ProductPhotosInline, CategoryInline]
+    inlines = [ProductPhotosInline]
 
 
-class CategoryAdmin(admin.ModelAdmin):
-    inlines = [ProductSizeInline]
-
-
-admin.site.register(Company, CompanyAdmin)
-admin.site.register(Product, ProductAdmin)
-admin.site.register(Category, CategoryAdmin)
+admin.site.register(Company)
+admin.site.register(Product)
+admin.site.register(Category)
+admin.site.register(ProductSize)
