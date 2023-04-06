@@ -19,6 +19,17 @@
                 <p class="detail__title">{{ item.company.name_company }}</p>
                 <p class="detail__description">{{ item.name_item }}</p>
                 <p class="detail__available">Доступно: <br/><span>{{ item.inventory.quantity }}</span></p>
+                {% for test in item.sizes.all %}
+                    <div style="display: flex; flex-direction: column; border: 1px solid black; padding: 5px;" class="sizeBox">
+                        {{ test.size }}
+                        <div class="sizeBoxQuanity" style="display: none;">
+                            {{ test.quantity }}
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+
             </div>
             <div class="detail__price">
                 <p class="detail__textPrice">{{ item.price }} $</p>

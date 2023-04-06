@@ -24,12 +24,15 @@ def catalog(request):
     })
 
 
-# def testRequest(request):
-#     products = Cart(request)
-#     items = Product.objects.filter(id=products.cart.id)
-#     return render(request, 'main/test.html', {
-#         'products': items
-#     })
+def check_out(request):
+    cart = Cart(request)
+    products = Product.objects.filter(id__in=cart.cart.keys())
+    for product in products:
+        print(cart.cart[str(product.id)]['price'])
+    print(products)
+    return render(request, 'main/test.html', {
+        'products': products
+    })
 
 # @login_required
 def brands(request):

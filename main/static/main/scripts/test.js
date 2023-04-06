@@ -8,3 +8,9 @@ cartLink.addEventListener('click', (event) => {
     wrapperListCart.classList.replace('active', 'disabled')
   }
 })
+
+const sizeBox = document.querySelectorAll("#sizeBox");
+const sizeBoxQuntity = document.querySelectorAll("#sizeBoxQuanity");
+
+
+
