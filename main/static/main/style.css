@@ -262,3 +262,12 @@ body {
     display: inline-block;
     margin-top: 5px;
 }
+
+.test {
+
+}
+
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+}

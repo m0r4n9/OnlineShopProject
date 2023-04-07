@@ -71,19 +71,6 @@
 
     {% endblock %}
 </div>
-<script src="{% static 'main/scripts/test.js' %}"></script>
-<script type="text/javascript">
-    $(function(){
-     $('.sizeBox').hover(function() {
-          $(this).children("div").css({
-              display: 'block'
-          })
-     }, function (){
-         $(this).children("div").css({
-              display: 'none'
-          })
-     });
-   })
-</script>
+<script type="text/javascript" src="{% static 'main/scripts/test.js' %}"></script>
 </body>
 </html>

@@ -41,15 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crispy_forms',
-    'crispy_bootstrap5',
 ]
 
 # LOGIN_URL = '/login'
 # LOGIN_REDIRECT_URL = 'account/login/'
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
 CART_SESSION_ID = 'cart'
 AUTH_USER_MODEL = "users.CustomUser"
 

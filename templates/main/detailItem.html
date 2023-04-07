@@ -34,8 +34,11 @@
             <div class="detail__price">
                 <p class="detail__textPrice">{{ item.price }} $</p>
                 <form action="{% url "main:cart_add" item.id %}" method="post">
-                    {{ cart_product_form }}
                     {% csrf_token %}
+{#                    {% for size in item.sizes.all %}#}
+{#                        <input id="{{ size.size }}" type="button" required="required" name="sizeField" value="{{ size.size }}">#}
+{#                    {% endfor %}#}
+                    {{ cart_product_form }}
                     <button type="submit" class="btn btn-dark btn-lg">Добавить в корзину<br/><span>размер N</span>
                     </button>
                 </form>
