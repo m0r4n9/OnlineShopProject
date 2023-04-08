@@ -18,31 +18,28 @@
             <div class="detail__text">
                 <p class="detail__title">{{ item.company.name_company }}</p>
                 <p class="detail__description">{{ item.name_item }}</p>
-                <p class="detail__available">Доступно: <br/><span>{{ item.inventory.quantity }}</span></p>
-                {% for test in item.sizes.all %}
-                    <div style="display: flex; flex-direction: column; border: 1px solid black; padding: 5px;" class="sizeBox">
-                        {{ test.size }}
-                        <div class="sizeBoxQuanity" style="display: none;">
-                            {{ test.quantity }}
-                        </div>
-                    </div>
+                <button type="button" class="btn btn-dark" style="margin-bottom: 30px;" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                    Выбрать размер
+                </button>
 
-                {% endfor %}
+
+                <div>
+                    {% if choiceSize %}
+                        <form action="{% url 'main:cart_addTrue' product_id=item.id size_id=choiceSize.id %}"
+                              method="post">
+                            {% csrf_token %}
+                            {{ cart_product_form }}
+                            <button type="submit" class="btn btn-success">
+                                Купить<br><span>размер: {{ choiceSize.size }}</span></button>
+                        </form>
+                    {% endif %}
+                </div>
 
 
             </div>
-            <div class="detail__price">
+            <div class="detail__price" style="padding-left: 10px;">
                 <p class="detail__textPrice">{{ item.price }} $</p>
-                <form action="{% url "main:cart_add" item.id %}" method="post">
-                    {% csrf_token %}
-{#                    {% for size in item.sizes.all %}#}
-{#                        <input id="{{ size.size }}" type="button" required="required" name="sizeField" value="{{ size.size }}">#}
-{#                    {% endfor %}#}
-                    {{ cart_product_form }}
-                    <button type="submit" class="btn btn-dark btn-lg">Добавить в корзину<br/><span>размер N</span>
-                    </button>
-                </form>
-
             </div>
             <div class="detail__list">
                 <ul>
@@ -71,5 +68,35 @@
                 </ul>
             </div>
         </div>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Выберете размер обуви</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% for size in sizes %}
+                            <a class="btn btn-dark"
+                               href="{% url "main:details_product" item_id=item.id size_id=size.id %}">{{ size.size }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div id="myModalReport" class="modal-report">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <p>{{ message }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}

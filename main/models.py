@@ -44,6 +44,9 @@ class ProductSize(models.Model):
     size = models.CharField(max_length=2)
     quantity = models.PositiveIntegerField()
 
+    def __str__(self):
+        return self.size
+
 
 class Product(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)

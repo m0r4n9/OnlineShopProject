@@ -14,6 +14,7 @@
             <th style="padding: 20px">Количество</th>
             <th style="padding: 20px">Удалить?</th>
             <th style="padding: 20px">Цена за 1 товар</th>
+            <th style="padding: 20px">Размер</th>
             <th style="padding: 20px">Цена</th>
         </tr>
         </thead>
@@ -29,6 +30,7 @@
                     <td style="padding: 0 20px">{{ item.quantity }}</td>
                     <td style="padding: 0 20px"><a href="{% url "main:cart_remove" product.id %}">Remove</a></td>
                     <td style="padding: 0 20px" class="num">${{ product.price }}</td>
+                    <td style="padding: 0 20px" class="num">{{ item.size }}</td>
                     <td style="padding: 0 20px" class="num">${{ item.total_price }}</td>
                 </tr>
             {% endwith %}

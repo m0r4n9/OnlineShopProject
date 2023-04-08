@@ -24,13 +24,11 @@ class ProductPhotosInline(admin.StackedInline):
 #     max_num = 1
 #     extra = 0
 
-
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name_item', 'category', 'gender']
     inlines = [ProductPhotosInline]
 
 
 admin.site.register(Company)
-admin.site.register(Product)
+admin.site.register(Product, ProductAdmin)
 admin.site.register(Category)
 admin.site.register(ProductSize)
