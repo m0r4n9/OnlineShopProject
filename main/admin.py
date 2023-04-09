@@ -18,14 +18,13 @@ class ProductPhotosInline(admin.StackedInline):
     max_num = 10
     extra = 0
 
-
-# class CategoryInline(admin.StackedInline):
-#     model = Category
-#     max_num = 1
-#     extra = 0
+class ProductSizesInline(admin.StackedInline):
+    model = ProductSize
+    max_num = 20
+    extra = 0
 
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductPhotosInline]
+    inlines = [ProductSizesInline,   ProductPhotosInline]
 
 
 admin.site.register(Company)

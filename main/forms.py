@@ -1,46 +1,33 @@
 from django import forms
 
-from main.models import Product, ProductSize
-from bootstrap4.widgets import RadioSelectButtonGroup, RadioSelect
+from main.models import Category, Product
 
 
 class CartAddProductForm(forms.Form):
     update = forms.BooleanField(required=False, initial=False, widget=forms.HiddenInput)
-    # sizes = forms.ModelMultipleChoiceField(queryset=ProductSize.objects.all(), widget=forms.CheckboxSelectMultiple)
 
-    # class Meta:
-    #     model = ProductSize
-    #     fields = ['sizes']
 
-    # def __init__(self, pk, *args, **kwargs):
-    #     super(CartAddProductForm, self).__init__(*args, **kwargs)
-    #     sizes = ProductSize.objects.filter()
-    #     print(sizes[0].size)
-    #     sizes_list = []
-    #     for item in sizes:
-    #         sizes_list.append((item, item.size))
-    # for item in sizes:
-    #     sizes_list.append((item, item.size))
-    # for item in sizes:
-    #     sizes_list.append((item, item.size))
-    # for item in sizes:
-    #     sizes_list.append((item, item.size))
-    # for item in sizes:
-    #     sizes_list.append((item, item.size))
-    # for item in sizes:
-    #     sizes_list.append((item, item.size))
-    # for item in sizes:
-    #     sizes_list.append((item, item.size))
-    # for item in sizes:
-    #     sizes_list.append((item, item.size))
-    # for item in sizes:
-    #     sizes_list.append((item, item.size))
-    # for item in sizes:
-    #     sizes_list.append((item, item.size))
-    # for item in sizes:
-    #     sizes_list.append((item, item.size))
-    # for item in sizes:
-    #     sizes_list.append((item, item.size))
-    # self.fields['sizes'] = forms.ChoiceField(required=True, choices=sizes_list, widget=forms.RadioSelect(attrs={
-    #     'class': 'test',
-    # }))
+class CategoryForm(forms.Form):
+    categories = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        choices=[(category.id, category) for category in Category.objects.all()],
+        required=False,
+    )
+    gender_choices = [
+        ('W', 'Man'),
+        ('M', 'Woman'),
+        ('U', 'Unisex'),
+    ]
+    gender = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        choices=gender_choices,
+        required=False,
+    )
+
+
+class SortForm(forms.Form):
+    sort_choices = (
+        ('price_asc', 'Цене (от меньшего к большему)'),
+        ('price_desc', 'Цене (от большего к меньшему)'),
+    )
+    sort_by = forms.ChoiceField(choices=sort_choices, required=False, widget=forms.RadioSelect(attrs={'onchange': 'this.form.submit()'}))

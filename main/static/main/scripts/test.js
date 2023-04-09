@@ -10,6 +10,9 @@ window.onload = function() {
   }, 5000); // модальное окно исчезнет через 5 секунд
 };
 
-closeBtn.onclick = function() {
-  modal.style.opacity = "0";
-};
+
+$(document).ready(function(){
+  $('.dropdown').hover(function(){
+    $(this).find('.dropdown-menu').toggleClass('show');
+  });
+});

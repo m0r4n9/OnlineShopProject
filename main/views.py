@@ -4,24 +4,41 @@ from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.views.decorators.http import require_POST
 
 from .cart import Cart
-from .forms import CartAddProductForm
+from .forms import CartAddProductForm, CategoryForm, SortForm
 from .models import Product, Company, ProductPhotos, ProductSize
 
 
 # Create your views here.
 def home(request):
-    recent_release = Product.objects.order_by('-release')[:5]
+    recent_release = Product.objects.order_by('release')[:5]
     return render(request, 'main/home.html', {
         'recent_release': recent_release
     })
 
 
 def catalog(request):
+    category = None
     items_list = Product.objects.all()
-    # cart_product_form = CartAddProductForm()
+    form_category = CategoryForm(request.POST or None)
+    form_sort = SortForm(request.POST or None)
+    if request.method == 'POST':
+        if form_category.is_valid():
+            categories = form_category.cleaned_data['categories']
+            gender = form_category.cleaned_data['gender']
+            if categories:
+                items_list = items_list.filter(category__in=categories)
+            if gender:
+                items_list = items_list.filter(gender__in=gender)
+        if form_sort.is_valid():
+            sort_by = form_sort.cleaned_data['sort_by']
+            if sort_by == 'price_asc':
+                items_list = items_list.order_by('price')
+            elif sort_by == 'price_desc':
+                items_list = items_list.order_by('-price')
     return render(request, 'main/catalog.html', {
         'items_list': items_list,
-        # 'cart_product_form': cart_product_form,
+        'category_form': form_category,
+        'sort_form': form_sort,
     })
 
 
@@ -81,25 +98,21 @@ def cart_add(request, product_id, size_id):
         cd = form.cleaned_data
         cart.add(product, size)
         messages.success(request, 'Товар успешно добавлен в корзину!')
-        return redirect(request.META.get('HTTP_REFERER'))
-        # return render(request, 'main/cart.html', {
-        #     'cart': cart
-        # })
     else:
-        return render(request, 'main/home.html')
+        messages.success(request, 'Произошла ошибка!')
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
-def cart_remove(request, product_id):
+def cart_remove(request, product_id, size_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
-    cart.remove(product)
+    size = ProductSize.objects.get(pk=size_id)
+    cart.remove(product, size)
     return redirect('main:cart')
-    # return redirect(reverse('main:details_product', args=(product.id,)))
 
 
 def cart_detail(request):
     cart = Cart(request)
-    print(cart.cart)
     return render(request, 'main/cart.html', {
         'cart': cart,
     })

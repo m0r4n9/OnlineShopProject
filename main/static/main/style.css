@@ -3,12 +3,28 @@ body {
     font-family: GraphikLCG, sans-serif;
 }
 
+.catalog-header {
+    display: flex;
+    justify-content: right;
+    border: 1px solid black;
+
+}
+
 .wrapper-catalog {
+    position: relative;
+    display: flex;
+    /*width: 80vw;*/
+    /*margin: 0 auto;*/
+}
+
+.catalog-filters {
+    /*width: 300px;*/
+}
+
+.catalog-items {
     display: flex;
     flex-wrap: wrap;
-    width: 60rem;
-    /*width: 10px;*/
-    margin: 10px auto;
+    /*width: 75vw;*/
 }
 
 .card {
@@ -330,3 +346,60 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
+
+
+/*----------*/
+/*dropdown*/
+.dropdown {
+    display: inline-block;
+
+}
+
+.dropdown-toggle {
+    background-color: #f1f1f1;
+    color: black;
+    padding: 12px 24px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    z-index: 1;
+    display: none;
+    transition: opacity .5s;
+}
+
+.dropdown-menu a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-menu a:hover {
+    background-color: #ddd;
+}
+
+.show {
+    display: block;
+    animation: dropdown-animation 0.3s ease-in-out;
+}
+
+@keyframes dropdown-animation {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*----------*/

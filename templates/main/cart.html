@@ -28,7 +28,8 @@
                     </td>
                     <td style="font-size: 20px; width: 200px; padding: 0 20px">{{ product.name_item }}</td>
                     <td style="padding: 0 20px">{{ item.quantity }}</td>
-                    <td style="padding: 0 20px"><a href="{% url "main:cart_remove" product.id %}">Remove</a></td>
+                    <td style="padding: 0 20px"><a
+                            href="{% url "main:cart_remove" product.id item.size_id %}">Remove</a></td>
                     <td style="padding: 0 20px" class="num">${{ product.price }}</td>
                     <td style="padding: 0 20px" class="num">{{ item.size }}</td>
                     <td style="padding: 0 20px" class="num">${{ item.total_price }}</td>

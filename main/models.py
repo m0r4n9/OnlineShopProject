@@ -39,19 +39,18 @@ class Company(models.Model):
 class Category(models.Model):
     type_product = models.CharField(max_length=1, choices=CATEGORY_CLOTHES)
 
-
-class ProductSize(models.Model):
-    size = models.CharField(max_length=2)
-    quantity = models.PositiveIntegerField()
-
     def __str__(self):
-        return self.size
+        if self.type_product == 'S':
+            return 'Обувь'
+        elif self.type_product == 'O':
+            return 'Верхняя одежда'
+        elif self.type_product == 'P':
+            return 'Штаны'
 
 
 class Product(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    sizes = models.ManyToManyField(ProductSize)
     name_item = models.CharField(max_length=250)
     image_prev = models.ImageField(null=True, blank=True, upload_to="images/")
     gender = models.CharField(max_length=1, choices=GENDER_ID, default='U')
@@ -60,6 +59,15 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name_item
+
+
+class ProductSize(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    size = models.CharField(max_length=2)
+    quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.size
 
 
 class ProductPhotos(models.Model):

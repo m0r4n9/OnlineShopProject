@@ -12,8 +12,8 @@
                     <div class="carousel-inner">
                         {% for product in recent_release %}
                             {% if forloop.counter == 1 %}
-                                <div class="carousel-item active" data-bs-interval="5000">
-                                    <img src="{{ product.cart_img.url }}" class="d-block w-100" alt="...">
+                                <div class="carousel-item active" data-bs-interval="3500">
+                                    <img src="{{ product.image_prev.url }}" class="d-block w-100" alt="...">
                                     <div style="text-align: center;">
                                         <p>{{ product.name_item }}</p>
                                         <p>{{ product.release.day }}:{{ product.release.month }}:{{ product.release.year }}</p>
@@ -22,7 +22,7 @@
                                 </div>
                             {% else %}
                                 <div class="carousel-item" data-bs-interval="5000">
-                                    <img src="{{ product.cart_img.url }}" class="d-block w-100" alt="...">
+                                    <img src="{{ product.image_prev.url }}" class="d-block w-100" alt="...">
                                     <div style="text-align: center;">
                                         <p>{{ product.name_item }}</p>
                                         <p>{{ product.release.day }}:{{ product.release.month }}:{{ product.release.year }}</p>
