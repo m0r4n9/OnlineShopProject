@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.views.decorators.http import require_POST
 
 from .cart import Cart
-from .forms import CartAddProductForm, CategoryForm, SortForm
+from .forms import CartAddProductForm, CategoryForm
 from .models import Product, Company, ProductPhotos, ProductSize
 
 
@@ -17,28 +17,35 @@ def home(request):
 
 
 def catalog(request):
-    category = None
+    # category = None
     items_list = Product.objects.all()
     form_category = CategoryForm(request.POST or None)
-    form_sort = SortForm(request.POST or None)
     if request.method == 'POST':
         if form_category.is_valid():
             categories = form_category.cleaned_data['categories']
             gender = form_category.cleaned_data['gender']
+            filter = form_category.cleaned_data['sort_by']
             if categories:
                 items_list = items_list.filter(category__in=categories)
             if gender:
                 items_list = items_list.filter(gender__in=gender)
-        if form_sort.is_valid():
-            sort_by = form_sort.cleaned_data['sort_by']
-            if sort_by == 'price_asc':
+            if filter == 'price_asc':
                 items_list = items_list.order_by('price')
-            elif sort_by == 'price_desc':
+            elif filter == 'price_desc':
                 items_list = items_list.order_by('-price')
+            elif filter == 'release_asc':
+                items_list = items_list.order_by('release')
+            elif filter == 'release_desc':
+                items_list = items_list.order_by('-release')
+
+
+            # elif filter == 'release_desc':
+
+            # items_list = items_list.order_by('release')
+
     return render(request, 'main/catalog.html', {
         'items_list': items_list,
         'category_form': form_category,
-        'sort_form': form_sort,
     })
 
 

@@ -23,11 +23,12 @@ class CategoryForm(forms.Form):
         choices=gender_choices,
         required=False,
     )
-
-
-class SortForm(forms.Form):
     sort_choices = (
         ('price_asc', 'Цене (от меньшего к большему)'),
         ('price_desc', 'Цене (от большего к меньшему)'),
+        ('release_asc', 'Дате выхода (от новых к старым)'),
+        ('release_desc', 'Дате выхода (от старых к новым)'),
     )
-    sort_by = forms.ChoiceField(choices=sort_choices, required=False, widget=forms.RadioSelect(attrs={'onchange': 'this.form.submit()'}))
+
+    sort_by = forms.ChoiceField(choices=sort_choices, required=False,
+                                widget=forms.RadioSelect())
