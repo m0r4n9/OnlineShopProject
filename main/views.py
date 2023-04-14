@@ -67,24 +67,33 @@ def brands(request):
 def detail(request, item_id, size_id=0):
     item = Product.objects.get(pk=item_id)
     sizes = ProductSize.objects.filter(product=item).order_by('size')
-
     photos_product = ProductPhotos.objects.filter(product_parent=item)
-    cart_product_form = CartAddProductForm()
 
+    print(sizes)
+
+    is_favorite = FavoriteList.objects.get(user=request.user).products.all().filter(id=item_id)
+    if is_favorite:
+        include_item = True
+    else:
+        include_item = False
+
+    cart_product_form = CartAddProductForm()
     if size_id != 0:
         context = {
             'item': item,
             'sizes': sizes,
             'choiceSize': sizes.get(pk=size_id),
             'photos': photos_product,
-            'cart_product_form': cart_product_form
+            'cart_product_form': cart_product_form,
+            'include_item': include_item
         }
         return render(request, 'main/detailItem.html', context)
     context = {
         'item': item,
         'sizes': sizes,
         'photos': photos_product,
-        'cart_product_form': cart_product_form
+        'cart_product_form': cart_product_form,
+        'include_item': include_item
     }
     return render(request, 'main/detailItem.html', context)
 
@@ -119,9 +128,17 @@ def cart_detail(request):
         'cart': cart,
     })
 
+
 def add_favorite(request, item_id):
     favorite = FavoriteList.objects.get(user=request.user)
     product = Product.objects.get(id=item_id)
     favorite_list = FavoriteList.objects.get(user=request.user)
     favorite_list.products.add(product)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+def remove_favorite(request, item_id):
+    favorite = FavoriteList.objects.get(user=request.user)
+    product = Product.objects.get(id=item_id)
+    favorite_list = FavoriteList.objects.get(user=request.user)
+    favorite_list.products.remove(product)
     return redirect(request.META.get('HTTP_REFERER'))

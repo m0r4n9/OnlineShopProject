@@ -43,7 +43,14 @@ class Cart:
                 if item_data['id'] == product.id:
                     self.cart[item_id]['product'] = product
                     self.cart[item_id]['size'] = ProductSize.objects.get(id=item_data['size_id'])
-                    yield self.cart[item_id]
+                    # self.cart['price'] = Decimal(self.cart[item_id]['price'])
+                    # self.cart[item_id]['total_price'] = self.cart[item_id]['price'] * self.cart[item_id]['quantity']
+                    # yield self.cart[item_id]
+
+        for item in self.cart.values():
+            item['price'] = Decimal(item['price'])
+            item['total_price'] = item['price'] * item['quantity']
+            yield item
 
     def __len__(self):
         return sum(item['quantity'] for item in self.cart.values())
@@ -51,6 +58,7 @@ class Cart:
     def get_total_price(self):
         return sum(Decimal(item['price']) * item['quantity'] for item in
                    self.cart.values())
+        # return self.cart
 
     def clear(self):
         del self.session[settings.CART_SESSION_ID]

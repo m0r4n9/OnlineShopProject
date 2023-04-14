@@ -15,13 +15,25 @@
             {% endfor %}
         </div>
         <div class="right-menu">
+            <div>
+
+            </div>
             <div class="detail__text">
                 <p class="detail__title">{{ item.company.name_company }}</p>
                 <p class="detail__description">{{ item.name_item }}</p>
-                <button type="button" class="btn btn-dark" style="margin-bottom: 30px;" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal">
-                    Выбрать размер
-                </button>
+                {% if sizes %}
+                    <button type="button" class="btn btn-dark" style="margin-bottom: 30px;" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">
+                        Выбрать размер
+                    </button>
+                    {% else %}
+                    <button disabled type="button" class="btn btn-dark" style="margin-bottom: 30px;" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">
+                        Выбрать размер
+                    </button>
+                    <p>К сожалению, данного товара сейчас нет в наличии</p>
+                {% endif %}
+
 
 
                 <div>
@@ -57,7 +69,12 @@
                     </li>
                     <li>
                         <div>
-                            <a href="{% url "main:favorite_add" item.id %}">В избранное</a>
+                            {% if include_item %}
+                                <a href="{% url "main:remove_favorite" item.id %}">Удалить из избраного</a>
+                            {% else %}
+                                <a href="{% url "main:favorite_add" item.id %}">Добавить в избранное</a>
+                            {% endif %}
+
                         </div>
                     </li>
                     <li>
@@ -74,7 +91,12 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Выберете размер обуви</h1>
+                        {% if item.category.type_product == 'S' %}
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Выберете размер обуви</h1>
+                        {% elif item.category.type_product == 'O' %}
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Выберете размер одежды</h1>
+                        {% endif %}
+                        {#                        <h1 class="modal-title fs-5" id="exampleModalLabel">Выберете размер обуви</h1>#}
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                     </div>

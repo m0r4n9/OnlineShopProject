@@ -67,7 +67,7 @@ class Product(models.Model):
 
 class ProductSize(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    size = models.CharField(max_length=2)
+    size = models.CharField(max_length=4)
     quantity = models.PositiveIntegerField()
 
     def __str__(self):
