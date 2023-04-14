@@ -5,7 +5,7 @@ from django.views.decorators.http import require_POST
 
 from .cart import Cart
 from .forms import CartAddProductForm, CategoryForm
-from .models import Product, Company, ProductPhotos, ProductSize
+from .models import Product, Company, ProductPhotos, ProductSize, FavoriteList
 
 
 # Create your views here.
@@ -38,11 +38,6 @@ def catalog(request):
             elif filter_by == 'release_desc':
                 items_list = items_list.order_by('-release')
 
-
-            # elif filter == 'release_desc':
-
-            # items_list = items_list.order_by('release')
-
     return render(request, 'main/catalog.html', {
         'items_list': items_list,
         'category_form': form_category,
@@ -73,7 +68,7 @@ def detail(request, item_id, size_id=0):
     item = Product.objects.get(pk=item_id)
     sizes = ProductSize.objects.filter(product=item).order_by('size')
 
-    photos_product = ProductPhotos.objects.select_related().all()
+    photos_product = ProductPhotos.objects.filter(product_parent=item)
     cart_product_form = CartAddProductForm()
 
     if size_id != 0:
@@ -123,3 +118,10 @@ def cart_detail(request):
     return render(request, 'main/cart.html', {
         'cart': cart,
     })
+
+def add_favorite(request, item_id):
+    favorite = FavoriteList.objects.get(user=request.user)
+    product = Product.objects.get(id=item_id)
+    favorite_list = FavoriteList.objects.get(user=request.user)
+    favorite_list.products.add(product)
+    return redirect(request.META.get('HTTP_REFERER'))
