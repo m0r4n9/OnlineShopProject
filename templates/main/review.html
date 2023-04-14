@@ -1,0 +1,21 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Review{% endblock %}
+
+{% block content %}
+    <h1>Отзывы</h1>
+    {% for review in reviews %}
+        <div class="review">
+            <p>{{ review.user }} - {{ review.rating }}/5</p>
+            <p>{{ review.comment }}</p>
+            <p>{{ review.created_at }}</p>
+        </div>
+    {% endfor %}
+
+    <h2>Оставить отзыв</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Отправить</button>
+    </form>
+{% endblock %}

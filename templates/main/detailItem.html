@@ -26,8 +26,9 @@
                             data-bs-target="#exampleModal">
                         Выбрать размер
                     </button>
-                    {% else %}
-                    <button disabled type="button" class="btn btn-dark" style="margin-bottom: 30px;" data-bs-toggle="modal"
+                {% else %}
+                    <button disabled type="button" class="btn btn-dark" style="margin-bottom: 30px;"
+                            data-bs-toggle="modal"
                             data-bs-target="#exampleModal">
                         Выбрать размер
                     </button>
@@ -82,6 +83,18 @@
                             <p>Описание</p>
                         </div>
                     </li>
+                    <li>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#createReviewModal">
+                            Написать отзыв
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-dark" data-bs-toggle="modal"
+                                data-bs-target="#listReview">
+                            Отзывы
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -96,7 +109,7 @@
                         {% elif item.category.type_product == 'O' %}
                             <h1 class="modal-title fs-5" id="exampleModalLabel">Выберете размер одежды</h1>
                         {% endif %}
-                        {#                        <h1 class="modal-title fs-5" id="exampleModalLabel">Выберете размер обуви</h1>#}
+
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                     </div>
@@ -110,6 +123,7 @@
             </div>
         </div>
 
+
         {% if messages %}
             {% for message in messages %}
                 <div id="myModalReport" class="modal-report">
@@ -121,4 +135,49 @@
             {% endfor %}
         {% endif %}
     </div>
+    <!-- Button trigger modal -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="createReviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'main:review' %}" method="post">
+                        {% csrf_token %}
+                        {{ review }}
+                        <button type="submit">Отправить</button>
+                    </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="listReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% for purchase in purchases %}
+
+                    {% endfor %}
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

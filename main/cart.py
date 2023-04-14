@@ -1,6 +1,5 @@
 from _decimal import Decimal
 from django.conf import settings
-from main.models import Product
 
 from .models import Product, ProductSize
 

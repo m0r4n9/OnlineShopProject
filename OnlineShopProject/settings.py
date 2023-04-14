@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'django.db.models.signals'
 ]
 
-# LOGIN_URL = '/login'
-# LOGIN_REDIRECT_URL = 'account/login/'
+LOGIN_URL = 'users/login/'
+# LOGIN_REDIRECT_URL = 'users/login/'
 
 CART_SESSION_ID = 'cart'
 AUTH_USER_MODEL = "users.CustomUser"

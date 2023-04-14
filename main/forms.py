@@ -1,6 +1,6 @@
 from django import forms
 
-from main.models import Category, Product
+from main.models import Category, Review, ReviewPhotos, Product
 
 
 class CartAddProductForm(forms.Form):
@@ -32,3 +32,23 @@ class CategoryForm(forms.Form):
 
     sort_by = forms.ChoiceField(choices=sort_choices, required=False,
                                 widget=forms.RadioSelect())
+
+
+class ReviewForm(forms.ModelForm):
+    photos = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
+    product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
+
+    class Meta:
+        model = Review
+        fields = ['product', 'comment', 'rating']
+
+    def save(self, commit=True, user=None):
+        review = super().save(commit=False)
+        review.user = user
+        if commit:
+            review.save()
+        photos = self.cleaned_data.get('photos')
+        if photos:
+            for photo in photos:
+                ReviewPhotos.objects.create(review=review, photo=photo)
+        return review

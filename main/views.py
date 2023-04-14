@@ -1,14 +1,15 @@
+from _decimal import Decimal
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect, reverse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
 from .cart import Cart
-from .forms import CartAddProductForm, CategoryForm
-from .models import Product, Company, ProductPhotos, ProductSize, FavoriteList
+from .forms import CartAddProductForm, CategoryForm, ReviewForm
+from .models import Product, Company, ProductPhotos, ProductSize, FavoriteList, Review, Purchase
 
 
-# Create your views here.
 def home(request):
     recent_release = Product.objects.order_by('release')[:5]
     return render(request, 'main/home.html', {
@@ -17,7 +18,6 @@ def home(request):
 
 
 def catalog(request):
-    # category = None
     items_list = Product.objects.all()
     form_category = CategoryForm(request.POST or None)
     if request.method == 'POST':
@@ -44,18 +44,6 @@ def catalog(request):
     })
 
 
-def check_out(request):
-    cart = Cart(request)
-    products = Product.objects.filter(id__in=cart.cart.keys())
-    for product in products:
-        print(cart.cart[str(product.id)]['price'])
-    print(products)
-    return render(request, 'main/test.html', {
-        'products': products
-    })
-
-
-# @login_required
 def brands(request):
     brands_list = Company.objects.order_by('name_company')
     return render(request, 'main/brands.html', {
@@ -66,18 +54,21 @@ def brands(request):
 
 def detail(request, item_id, size_id=0):
     item = Product.objects.get(pk=item_id)
-    sizes = ProductSize.objects.filter(product=item).order_by('size')
+    sizes = ProductSize.objects.filter(product=item, quantity__gt=0).order_by('size')
     photos_product = ProductPhotos.objects.filter(product_parent=item)
-
-    print(sizes)
-
-    is_favorite = FavoriteList.objects.get(user=request.user).products.all().filter(id=item_id)
-    if is_favorite:
-        include_item = True
-    else:
-        include_item = False
-
     cart_product_form = CartAddProductForm()
+    include_item = False
+    review = None
+
+    purchases = Purchase.objects.filter(products__in=[item], user=request.user)
+    if purchases:
+        review = ReviewForm(initial={'product': item})
+
+    if request.user.is_authenticated:
+        is_favorite = FavoriteList.objects.get(user=request.user).products.all().filter(id=item_id)
+        if is_favorite:
+            include_item = True
+
     if size_id != 0:
         context = {
             'item': item,
@@ -85,16 +76,21 @@ def detail(request, item_id, size_id=0):
             'choiceSize': sizes.get(pk=size_id),
             'photos': photos_product,
             'cart_product_form': cart_product_form,
-            'include_item': include_item
+            'include_item': include_item,
+            'review': review,
+            'purchases': purchases,
         }
-        return render(request, 'main/detailItem.html', context)
-    context = {
-        'item': item,
-        'sizes': sizes,
-        'photos': photos_product,
-        'cart_product_form': cart_product_form,
-        'include_item': include_item
-    }
+    else:
+        context = {
+            'item': item,
+            'sizes': sizes,
+            'photos': photos_product,
+            'cart_product_form': cart_product_form,
+            'include_item': include_item,
+            'review': review,
+            'purchases': purchases,
+        }
+
     return render(request, 'main/detailItem.html', context)
 
 
@@ -124,11 +120,14 @@ def cart_remove(request, product_id, size_id):
 
 def cart_detail(request):
     cart = Cart(request)
+    for item in cart.cart:
+        print(item)
     return render(request, 'main/cart.html', {
         'cart': cart,
     })
 
 
+@login_required(login_url='/users/login')
 def add_favorite(request, item_id):
     favorite = FavoriteList.objects.get(user=request.user)
     product = Product.objects.get(id=item_id)
@@ -136,9 +135,43 @@ def add_favorite(request, item_id):
     favorite_list.products.add(product)
     return redirect(request.META.get('HTTP_REFERER'))
 
+
+@login_required(login_url='/users/login')
 def remove_favorite(request, item_id):
     favorite = FavoriteList.objects.get(user=request.user)
     product = Product.objects.get(id=item_id)
     favorite_list = FavoriteList.objects.get(user=request.user)
     favorite_list.products.remove(product)
     return redirect(request.META.get('HTTP_REFERER'))
+
+
+def check_out(request):
+    cart = Cart(request)
+    products = []
+    product_ids = []
+    product_size = {}
+    total_price = 0
+    for item in cart.cart.values():
+        total_price += Decimal(item['price'] * item['quantity'])
+        product_size[item['id']] = item['size']
+        product_ids.append(item['id'])
+
+    for size in product_size.keys():
+        product = Product.objects.get(id=size)
+        products.append(product)
+        size = ProductSize.objects.get(product=product, size=product_size[size])
+        size.quantity -= 1
+        size.save()
+
+    Purchase.objects.create(user=request.user, total_price=total_price).products.set(products)
+    cart.clear()
+    return redirect('users:profile')
+
+def add_review(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save(user=request.user)
+            return redirect('main:catalog')
+    else:
+        form = ReviewForm()

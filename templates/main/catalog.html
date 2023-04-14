@@ -19,40 +19,36 @@
                         <p class="text-filter">Фильтровать продукты по</p>
                         {{ category_form.sort_by }}
                         <button class="btn btn-dark catalog-acceptFilters">Принять фильтры</button>
-                        <a class="btn btn-secondary catalog-canselFilters" href="{% url "main:catalog" %}">Сбросить фильтры</a>
+                        <a class="btn btn-secondary catalog-canselFilters" href="{% url "main:catalog" %}">Сбросить
+                            фильтры</a>
                     </form>
                 </div>
 
                 <div class="catalog-items">
-                {% if items_list %}
-                    {% for item in items_list %}
-                        <div class="card" style="width: 18rem"
-                             onclick="window.location.href = '{% url 'main:details_product' item.id %}'">
-                            <img class="card-img-top" src="{{ item.image_prev.url }}" alt="Card image cap">
-                            <div class="card-body">
-                                <div style="height: 4.5rem; overflow: hidden">
-                                    <h5 class="card-title">{{ item.name_item }}</h5>
+                    {% if items_list %}
+                        {% for item in items_list %}
+                            <div class="card" style="width: 18rem"
+                                 onclick="window.location.href = '{% url 'main:details_product' item.id %}'">
+                                <img class="card-img-top" src="{{ item.image_prev.url }}" alt="Card image cap">
+                                <div class="card-body">
+                                    <div style="height: 4.5rem; overflow: hidden">
+                                        <h5 class="card-title">{{ item.name_item }}</h5>
+                                    </div>
+                                    <span>Релиз: {{ item.release.day }}.{{ item.release.month }}.{{ item.release.year }}</span>
+                                    <br/>
+                                    <span>Цена: {{ item.price }}$</span>
                                 </div>
-                                <span>Релиз: {{ item.release.day }}.{{ item.release.month }}.{{ item.release.year }}</span>
-                                <br/>
-                                <span>Цена: {{ item.price }}$</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert-catalog">
+                            <div class="alert alert-danger" role="alert">
+                                Вещей не найдено
                             </div>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="alert-catalog">
-                        <div class="alert alert-danger" role="alert">
-                            Вещей не найдено
-                        </div>
-                    </div>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
-            </div>
-
-
         </div>
-
     </div>
-    </div>
-
 {% endblock %}
