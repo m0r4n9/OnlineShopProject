@@ -2,6 +2,10 @@ import datetime
 
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from users.models import CustomUser
 
 # Create your models here.
 
@@ -73,3 +77,11 @@ class ProductSize(models.Model):
 class ProductPhotos(models.Model):
     product_parent = models.ForeignKey(Product, on_delete=models.CASCADE)
     images = models.ImageField(upload_to="images/")
+
+class FavoriteList(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product)
+
+    def __str__(self):
+        return self.user.username + 'favorite list'
+

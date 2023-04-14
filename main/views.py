@@ -24,18 +24,18 @@ def catalog(request):
         if form_category.is_valid():
             categories = form_category.cleaned_data['categories']
             gender = form_category.cleaned_data['gender']
-            filter = form_category.cleaned_data['sort_by']
+            filter_by = form_category.cleaned_data['sort_by']
             if categories:
                 items_list = items_list.filter(category__in=categories)
             if gender:
                 items_list = items_list.filter(gender__in=gender)
-            if filter == 'price_asc':
+            if filter_by == 'price_asc':
                 items_list = items_list.order_by('price')
-            elif filter == 'price_desc':
+            elif filter_by == 'price_desc':
                 items_list = items_list.order_by('-price')
-            elif filter == 'release_asc':
+            elif filter_by == 'release_asc':
                 items_list = items_list.order_by('release')
-            elif filter == 'release_desc':
+            elif filter_by == 'release_desc':
                 items_list = items_list.order_by('-release')
 
 

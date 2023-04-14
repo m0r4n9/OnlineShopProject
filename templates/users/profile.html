@@ -15,7 +15,7 @@
         </div>
     </div>
     <div style="margin-top: 30px">
-        <div class="person-information" >
+        <div class="person-information">
             <div class="person-description-email" style="display: flex; flex-direction: column; align-items: center">
                 <label for="email" class="person-label">Почта</label>
                 <input disabled type="email" class="person-input" id="email" value="{{ user.email }}"
@@ -33,5 +33,12 @@
            href="{% url 'users:logout' %}">Выйти?</a>
         <br/>
         <a class="btn btn-secondary" style="margin-top: 15px" href="{% url 'users:profile_edit' %}">Изменить данные</a>
+    </div>
+
+    <div>
+    {% for favorite in favorite_list %}
+        {{ favorite }}
+    {% endfor %}
+
     </div>
 {% endblock %}

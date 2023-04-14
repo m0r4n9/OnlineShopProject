@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 
+from main.models import FavoriteList
 from users.forms import CustomUserCreationForm, UserEdit
 
 # Create your views here.
@@ -16,6 +17,7 @@ def registration(request):
             email = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             account = authenticate(username=email, password=raw_password)
+            FavoriteList.objects.create(user=account)
             login(request, account)
             return redirect("users:profile_edit")
         else:
@@ -45,7 +47,11 @@ def login_in(request):
 
 @login_required
 def profile(request):
-    return render(request, 'users/profile.html')
+    favorite_list = FavoriteList.objects.get(user=request.user).products.all()
+    context = {
+        'favorite_list': favorite_list
+    }
+    return render(request, 'users/profile.html', context)
 
 
 @login_required
