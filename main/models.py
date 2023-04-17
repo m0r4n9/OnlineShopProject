@@ -21,7 +21,6 @@ GENDER_ID = [
     ('U', 'Unisex'),
 ]
 
-
 def current_year():
     return datetime.date.today().year
 
@@ -64,6 +63,9 @@ class Product(models.Model):
     def __str__(self):
         return self.name_item
 
+    def get_all_photos(self):
+        return ProductPhotos.objects.filter(product_parent=self)
+
 
 class ProductSize(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -100,9 +102,12 @@ class Review(models.Model):
     def __str__(self):
         return f'{self.user} - {self.rating}'
 
+    def get_all_photos(self):
+        return ReviewPhotos.objects.filter(review=self).all()
+
 
 class ReviewPhotos(models.Model):
-    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='photos')
     images = models.ImageField(upload_to='images/')
 
 

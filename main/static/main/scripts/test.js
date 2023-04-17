@@ -16,33 +16,3 @@ $(document).ready(function () {
     $(this).find('.dropdown-menu').toggleClass('show');
   });
 });
-
-
-$(document).ready(function() {
-  // При клике на кнопку "Открыть модальное окно"
-  $("#open-modal").click(function() {
-    // Показываем модальное окно
-    $("#modalReview").show();
-  });
-
-  // При клике на крестик (закрытие модального окна)
-  $(".close-review").click(function() {
-    // Скрываем модальное окно
-    $("#modalReview").hide();
-  });
-});
-
-$(document).ready(function() {
-  // При клике на кнопку "Открыть модальное окно"
-  $("#open-listReview").click(function() {
-    // Показываем модальное окно
-    $("#listReview").show();
-  });
-
-  // При клике на крестик (закрытие модального окна)
-  $(".close-listReview").click(function() {
-    // Скрываем модальное окно
-    $("#listReview").hide();
-  });
-});
-

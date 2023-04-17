@@ -6,8 +6,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
 from .cart import Cart
-from .forms import CartAddProductForm, CategoryForm, ReviewForm
-from .models import Product, Company, ProductPhotos, ProductSize, FavoriteList, Review, Purchase
+from .forms import CartAddProductForm, CategoryForm, ReviewForm, ReviewFormImages
+from .models import Product, Company, ProductSize, FavoriteList, Review, Purchase, ReviewPhotos
 
 
 def home(request):
@@ -25,6 +25,7 @@ def catalog(request):
             categories = form_category.cleaned_data['categories']
             gender = form_category.cleaned_data['gender']
             filter_by = form_category.cleaned_data['sort_by']
+
             if categories:
                 items_list = items_list.filter(category__in=categories)
             if gender:
@@ -55,14 +56,14 @@ def brands(request):
 def detail(request, item_id, size_id=0):
     item = Product.objects.get(pk=item_id)
     sizes = ProductSize.objects.filter(product=item, quantity__gt=0).order_by('size')
-    photos_product = ProductPhotos.objects.filter(product_parent=item)
+    purchases = Purchase.objects.filter(products__in=[item], user=request.user)
+    review_list = Review.objects.filter(product=item)
     cart_product_form = CartAddProductForm()
     include_item = False
     review = None
 
-    purchases = Purchase.objects.filter(products__in=[item], user=request.user)
     if purchases:
-        review = ReviewForm(initial={'product': item})
+        review = ReviewFormImages(initial={'product': item})
 
     if request.user.is_authenticated:
         is_favorite = FavoriteList.objects.get(user=request.user).products.all().filter(id=item_id)
@@ -74,21 +75,21 @@ def detail(request, item_id, size_id=0):
             'item': item,
             'sizes': sizes,
             'choiceSize': sizes.get(pk=size_id),
-            'photos': photos_product,
             'cart_product_form': cart_product_form,
             'include_item': include_item,
             'review': review,
             'purchases': purchases,
+            'review_list': review_list,
         }
     else:
         context = {
             'item': item,
             'sizes': sizes,
-            'photos': photos_product,
             'cart_product_form': cart_product_form,
             'include_item': include_item,
             'review': review,
             'purchases': purchases,
+            'review_list': review_list,
         }
 
     return render(request, 'main/detailItem.html', context)
@@ -167,11 +168,21 @@ def check_out(request):
     cart.clear()
     return redirect('users:profile')
 
+
 def add_review(request):
     if request.method == 'POST':
-        form = ReviewForm(request.POST, request.FILES)
+        form = ReviewFormImages(request.POST or None, request.FILES or None)
+        files = request.FILES.getlist('images')
         if form.is_valid():
-            form.save(user=request.user)
-            return redirect('main:catalog')
-    else:
-        form = ReviewForm()
+            user = request.user
+            comment = form.cleaned_data['comment']
+            rating = form.cleaned_data['rating']
+            product = form.cleaned_data['product']
+            review_obj = Review.objects.create(user=user, comment=comment, rating=rating, product=product)
+            for photo in files:
+                print(photo)
+                ReviewPhotos.objects.create(review=review_obj, images=photo)
+            return redirect(request.META.get('HTTP_REFERER'))
+        else:
+            print("Form invalid")
+

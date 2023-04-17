@@ -1,6 +1,6 @@
 from django import forms
 
-from main.models import Category, Review, ReviewPhotos, Product
+from main.models import Category, Review, Product
 
 
 class CartAddProductForm(forms.Form):
@@ -34,21 +34,39 @@ class CategoryForm(forms.Form):
                                 widget=forms.RadioSelect())
 
 
-class ReviewForm(forms.ModelForm):
-    photos = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
-    product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
+# widget=forms.ClearableFileInput(attrs={'multiple': True}),
+# class ReviewForm(forms.ModelForm):
+#     photos = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
+#     product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
+#
+#     class Meta:
+#         model = Review
+#         fields = ['product', 'comment', 'rating']
+#         widgets = {
+#             'comment': forms.Textarea(attrs={'class': 'comment-reviewAdd'})
+#         }
 
+# def save(self, commit=True, user=None):
+#     review = super().save(commit=False)
+#     review.user = user
+#     if commit:
+#         review.save()
+#     photos = self.cleaned_data.get('photos')
+#     if photos:
+#         for photo in photos:
+#             print(photo)
+#             ReviewPhotos.objects.create(review=review, images=photo)
+#     return review
+
+class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['product', 'comment', 'rating']
+        fields = ['rating', 'comment']
 
-    def save(self, commit=True, user=None):
-        review = super().save(commit=False)
-        review.user = user
-        if commit:
-            review.save()
-        photos = self.cleaned_data.get('photos')
-        if photos:
-            for photo in photos:
-                ReviewPhotos.objects.create(review=review, photo=photo)
-        return review
+
+class ReviewFormImages(ReviewForm):
+    images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
+    product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
+
+    class Meta(ReviewForm.Meta):
+        fields = ReviewForm.Meta.fields + ['images']

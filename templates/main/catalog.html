@@ -10,7 +10,7 @@
             </div>
             <div class="wrapper-catalog">
                 <div class="catalog-filters">
-                    <form id="filter-form" method="POST">
+                    <form id="filter-form" method="post">
                         {% csrf_token %}
                         <p class="text-filter">Категории</p>
                         {{ category_form.categories }}

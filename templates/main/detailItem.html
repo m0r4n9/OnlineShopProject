@@ -8,7 +8,7 @@
             <div>
                 <img class="detail_mainImg" src="{{ item.image_prev.url }}" alt="">
             </div>
-            {% for photo in photos %}
+            {% for photo in item.get_all_photos %}
                 <div>
                     <img class="detail_mainImg" src="{{ photo.images.url }}" alt="123">
                 </div>
@@ -91,7 +91,7 @@
                     </li>
                     <li>
                         <button type="button" class="btn btn-dark" data-bs-toggle="modal"
-                                data-bs-target="#listReview">
+                                data-bs-target="#test">
                             Отзывы
                         </button>
                     </li>
@@ -135,46 +135,62 @@
             {% endfor %}
         {% endif %}
     </div>
-    <!-- Button trigger modal -->
 
-
-    <!-- Modal -->
     <div class="modal fade" id="createReviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Напишите свой отзыв</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{% url 'main:review' %}" method="post">
+                    {#                    ----#}
+                    <form action="{% url 'main:review' %}" method="post" class="note-form" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ review }}
-                        <button type="submit">Отправить</button>
+                        <button type="submit">Сохранить</button>
                     </form>
+                    {#                    ----#}
+                </div>
             </div>
         </div>
     </div>
 
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="listReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <div class="modal fade" id="test" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <h1 class="modal-reviewTitle fs-5" id="exampleModalLabel">Отзывы</h1>
+                    <h2 class="modal-reviewFilter fs-5">Сортировать по:</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {% for purchase in purchases %}
+                    {% if review_list %}
+                        {% for review in review_list %}
+                            <div class="review">
+                                <div class="review-header">
+                                    <p class="review-username">{{ review.user.username }}</p>
+                                    <p class="review-rating">Оценка: {{ review.rating }}/5</p>
+                                </div>
 
-                    {% endfor %}
+                                <div class="review-content">
+                                    <div class="review-wrapperPhoto">
+                                        {% for photo in review.get_all_photos %}
+                                            <img src="{{ photo.images.url }}"
+                                                 alt=""
+                                                 class="review-photo"
+                                            >
+                                        {% endfor %}
+                                    </div>
+                                    <p>{{ review.comment }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>На данный момент, отзывы на данный товар отсутсвуют.</p>
+                    {% endif %}
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+
                 </div>
             </div>
         </div>
