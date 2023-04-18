@@ -145,6 +145,13 @@ def cart_detail(request):
     if request.method == 'POST':
         form = PersonalInformation(request.POST, instance=request.user)
         if form.is_valid() and len(cart.cart) != 0:
+            for field in form.cleaned_data:
+                if not form.cleaned_data[field]:
+                    form.add_error(field, 'Это поле обязательное')
+                    return render(request, 'main/cart.html', {
+                        'cart': cart,
+                        'form': form,
+                    })
             form.save()
             products = []
             product_ids = []

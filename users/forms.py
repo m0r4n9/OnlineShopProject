@@ -5,7 +5,7 @@ from django.forms import TextInput, EmailInput
 from .models import CustomUser
 
 
-class  CustomUserCreationForm(UserCreationForm):
+class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ('username', 'password1', 'password2')
@@ -27,6 +27,7 @@ class CustomUserChangeForm(UserChangeForm):
             })
         }
 
+
 class UserEdit(forms.ModelForm):
     class Meta:
         model = CustomUser
@@ -44,7 +45,11 @@ class UserEdit(forms.ModelForm):
             })
         }
 
+
 class PersonalInformation(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ['first_name', 'last_name', 'city', 'street', 'postcode', 'phone_no']
+        required = ['first_name', 'last_name', 'city', 'street', 'postcode', 'phone_no']
+
+
