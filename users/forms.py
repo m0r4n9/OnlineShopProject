@@ -43,3 +43,8 @@ class UserEdit(forms.ModelForm):
                 'style': 'width: 480px;'
             })
         }
+
+class PersonalInformation(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'city', 'street', 'postcode', 'phone_no']

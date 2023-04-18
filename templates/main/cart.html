@@ -46,9 +46,15 @@
         </tbody>
     </table>
     <div style="text-align: center">
+    <div>
+        <form action="{% url 'main:cart' %}" method="post" class="personalInformation">
+            {% csrf_token %}
+            {{ form }}
+            <button class="btn btn-info" type="submit">Submit</button>
+        </form>
+    </div>
         <p class="text-right">
             <a href="{% url "main:catalog" %}" class="button light" style="margin-right: 10px;">Continue shopping</a>
-            <a href="{% url "main:check" %}" class="button">Checkout</a>
         </p>
     </div>
 

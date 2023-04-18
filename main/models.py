@@ -2,8 +2,7 @@ import datetime
 
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.utils import timezone
 
 from users.models import CustomUser
 
@@ -115,7 +114,12 @@ class Purchase(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product)
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
+
+    street = models.CharField(max_length=100, default=None)
+    city = models.CharField(max_length=100, default=None)
+    postcode = models.CharField(max_length=20, default=None)
+
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f'Order {self.id}'

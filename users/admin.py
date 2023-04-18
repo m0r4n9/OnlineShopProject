@@ -11,11 +11,12 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ['email', 'username', 'phone_no']
+    list_display = ['username', 'email', 'phone_no']
     fieldsets = (
-        ('Person Informations', {'fields': ('username', 'password', 'first_name', 'last_name', 'gender')}),
-        ('Contacts', {'fields': ('email', 'phone_no')}),
-        ('Dates', {'fields': ('last_login', 'date_joined')})
+        ('Личная информация', {'fields': ('username', 'password', 'first_name', 'last_name', 'gender')}),
+        ('Адресса', {'fields': ('city', 'street', 'postcode')}),
+        ('Контакты', {'fields': ('email', 'phone_no')}),
+        ('Даты', {'fields': ('last_login', 'date_joined')})
     )
 
 

@@ -15,9 +15,6 @@
             {% endfor %}
         </div>
         <div class="right-menu">
-            <div>
-
-            </div>
             <div class="detail__text">
                 <p class="detail__title">{{ item.company.name_company }}</p>
                 <p class="detail__description">{{ item.name_item }}</p>
@@ -84,7 +81,7 @@
                         </div>
                     </li>
                     <li>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        <button style="margin: 10px 0" type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#createReviewModal">
                             Написать отзыв
                         </button>
@@ -145,7 +142,8 @@
                 </div>
                 <div class="modal-body">
                     {#                    ----#}
-                    <form action="{% url 'main:review' %}" method="post" class="note-form" enctype="multipart/form-data">
+                    <form action="{% url 'main:review' %}" method="post" class="note-form"
+                          enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ review }}
                         <button type="submit">Сохранить</button>
@@ -183,6 +181,7 @@
                                         {% endfor %}
                                     </div>
                                     <p>{{ review.comment }}</p>
+                                    <p>{{ review.created_at }}</p>
                                 </div>
                             </div>
                         {% endfor %}

@@ -2,9 +2,12 @@ from _decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 
+from users.forms import PersonalInformation
 from .cart import Cart
 from .forms import CartAddProductForm, CategoryForm, ReviewForm, ReviewFormImages
 from .models import Product, Company, ProductSize, FavoriteList, Review, Purchase, ReviewPhotos
@@ -57,7 +60,7 @@ def detail(request, item_id, size_id=0):
     item = Product.objects.get(pk=item_id)
     sizes = ProductSize.objects.filter(product=item, quantity__gt=0).order_by('size')
     purchases = Purchase.objects.filter(products__in=[item], user=request.user)
-    review_list = Review.objects.filter(product=item)
+    review_list = Review.objects.filter(product=item).order_by('-created_at')
     cart_product_form = CartAddProductForm()
     include_item = False
     review = None
@@ -121,10 +124,16 @@ def cart_remove(request, product_id, size_id):
 
 def cart_detail(request):
     cart = Cart(request)
-    for item in cart.cart:
-        print(item)
+    if request.method == 'POST':
+        form = PersonalInformation(request.POST, instance=request.user)
+        if form.is_valid() and len(cart.cart) != 0:
+            form.save()
+            return redirect('main:check')
+    else:
+        form = PersonalInformation(instance=request.user)
     return render(request, 'main/cart.html', {
         'cart': cart,
+        'form': form
     })
 
 
@@ -164,7 +173,9 @@ def check_out(request):
         size.quantity -= 1
         size.save()
 
-    Purchase.objects.create(user=request.user, total_price=total_price).products.set(products)
+    userPurches = request.user
+    Purchase.objects.create(user=userPurches, total_price=total_price, street=userPurches.street, city=userPurches.city,
+                            postcode=userPurches.postcode).products.set(products)
     cart.clear()
     return redirect('users:profile')
 
@@ -185,4 +196,3 @@ def add_review(request):
             return redirect(request.META.get('HTTP_REFERER'))
         else:
             print("Form invalid")
-

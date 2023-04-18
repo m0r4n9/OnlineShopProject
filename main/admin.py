@@ -39,11 +39,20 @@ class ReviewAdmin(admin.ModelAdmin):
     inlines = [ReviewPhotosInline]
 
 
+class PurchesAdmin(admin.ModelAdmin):
+    fieldsets = [
+        ('Покупатель', {'fields': ('user',)}),
+        ('Адресс доставки', {'fields': ('city', 'street', 'postcode')}),
+        ("Список товаров", {'fields': ('products', 'total_price')}),
+        ("Время", {'fields': ('created_at',)}),
+    ]
+
+
 admin.site.register(Company)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category)
 admin.site.register(ProductSize)
 admin.site.register(FavoriteList)
 admin.site.register(Review, ReviewAdmin)
-admin.site.register(Purchase)
+admin.site.register(Purchase, PurchesAdmin)
 admin.site.register(ReviewPhotos)
