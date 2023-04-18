@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.db.models.signals'
+    'django.db.models.signals',
 ]
 
 LOGIN_URL = 'users/login/'
@@ -49,6 +49,14 @@ LOGIN_URL = 'users/login/'
 
 CART_SESSION_ID = 'cart'
 AUTH_USER_MODEL = "users.CustomUser"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+# EMAIL_USE_TLS = True
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'Abobus89@yandex.ru'
+EMAIL_HOST_PASSWORD = 'biasvtjlfxfotzic'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

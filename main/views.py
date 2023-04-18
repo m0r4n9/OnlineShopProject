@@ -2,14 +2,16 @@ from _decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
+from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 
+from django.core.mail import send_mail
+
+from OnlineShopProject import settings
 from users.forms import PersonalInformation
 from .cart import Cart
-from .forms import CartAddProductForm, CategoryForm, ReviewForm, ReviewFormImages
+from .forms import CartAddProductForm, CategoryForm, ReviewFormImages
 from .models import Product, Company, ProductSize, FavoriteList, Review, Purchase, ReviewPhotos
 
 
@@ -26,13 +28,14 @@ def catalog(request):
     if request.method == 'POST':
         if form_category.is_valid():
             categories = form_category.cleaned_data['categories']
-            gender = form_category.cleaned_data['gender']
-            filter_by = form_category.cleaned_data['sort_by']
-
             if categories:
                 items_list = items_list.filter(category__in=categories)
+
+            gender = form_category.cleaned_data['gender']
             if gender:
                 items_list = items_list.filter(gender__in=gender)
+
+            filter_by = form_category.cleaned_data['sort_by']
             if filter_by == 'price_asc':
                 items_list = items_list.order_by('price')
             elif filter_by == 'price_desc':
@@ -42,9 +45,16 @@ def catalog(request):
             elif filter_by == 'release_desc':
                 items_list = items_list.order_by('-release')
 
+    # paginator = Paginator(items_list, 1)
+    # page_number = request.GET.get('page')
+    # products_obj = paginator.get_page(page_number)
+    #
+    # filter_params = request.GET.urlencode()
+
     return render(request, 'main/catalog.html', {
         'items_list': items_list,
         'category_form': form_category,
+        # 'filter_params': filter_params,
     })
 
 
@@ -98,6 +108,14 @@ def detail(request, item_id, size_id=0):
     return render(request, 'main/detailItem.html', context)
 
 
+@login_required(login_url='/users/login')
+def favorite_products(request):
+    favorite = FavoriteList.objects.get(user=request.user).get_all_products()
+    return render(request, 'main/favoriteItems.html', {
+        'favorite_products': favorite,
+    })
+
+
 @require_POST
 @login_required(login_url='/users/login')
 def cart_add(request, product_id, size_id):
@@ -128,7 +146,31 @@ def cart_detail(request):
         form = PersonalInformation(request.POST, instance=request.user)
         if form.is_valid() and len(cart.cart) != 0:
             form.save()
-            return redirect('main:check')
+            products = []
+            product_ids = []
+            product_size = {}
+            total_price = 0
+            for item in cart.cart.values():
+                total_price += Decimal(item['price'] * item['quantity'])
+                product_size[item['id']] = item['size']
+                product_ids.append(item['id'])
+
+            for size in product_size.keys():
+                product = Product.objects.get(id=size)
+                products.append(product)
+                size = ProductSize.objects.get(product=product, size=product_size[size])
+                size.quantity -= 1
+                size.save()
+
+            userPurches = request.user
+            Purchase.objects.create(user=userPurches, total_price=total_price, street=userPurches.street,
+                                    city=userPurches.city,
+                                    postcode=userPurches.postcode).products.set(products)
+            send_email_purches(subject='Покупка', message='Спасибо за покупку', userName=request.user,
+                               products=products,
+                               recipient_list=[request.user.email])
+            cart.clear()
+            return redirect('users:profile')
     else:
         form = PersonalInformation(instance=request.user)
     return render(request, 'main/cart.html', {
@@ -155,31 +197,7 @@ def remove_favorite(request, item_id):
     return redirect(request.META.get('HTTP_REFERER'))
 
 
-def check_out(request):
-    cart = Cart(request)
-    products = []
-    product_ids = []
-    product_size = {}
-    total_price = 0
-    for item in cart.cart.values():
-        total_price += Decimal(item['price'] * item['quantity'])
-        product_size[item['id']] = item['size']
-        product_ids.append(item['id'])
-
-    for size in product_size.keys():
-        product = Product.objects.get(id=size)
-        products.append(product)
-        size = ProductSize.objects.get(product=product, size=product_size[size])
-        size.quantity -= 1
-        size.save()
-
-    userPurches = request.user
-    Purchase.objects.create(user=userPurches, total_price=total_price, street=userPurches.street, city=userPurches.city,
-                            postcode=userPurches.postcode).products.set(products)
-    cart.clear()
-    return redirect('users:profile')
-
-
+@login_required(login_url='/users/login')
 def add_review(request):
     if request.method == 'POST':
         form = ReviewFormImages(request.POST or None, request.FILES or None)
@@ -196,3 +214,13 @@ def add_review(request):
             return redirect(request.META.get('HTTP_REFERER'))
         else:
             print("Form invalid")
+
+
+def send_email_purches(subject, message, userName, products, recipient_list):
+    html_message = render_to_string('message/message.html', {
+        'subject': subject,
+        'message': message,
+        'user': userName,
+        'products': products,
+    })
+    send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, html_message=html_message)

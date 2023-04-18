@@ -20,6 +20,7 @@ GENDER_ID = [
     ('U', 'Unisex'),
 ]
 
+
 def current_year():
     return datetime.date.today().year
 
@@ -86,6 +87,9 @@ class FavoriteList(models.Model):
 
     def __str__(self):
         return self.user.username + 'favorite list'
+
+    def get_all_products(self):
+        return self.products.all()
 
 
 class Review(models.Model):

@@ -1,0 +1,37 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+    Избранные товары
+{% endblock %}
+
+{% block content %}
+    <div class="content-wrapper">
+        <p class="content-title">Избранные товары</p>
+        <div class="content">
+            {% if favorite_products %}
+                {% for item in favorite_products %}
+                    <div class="card" style="width: 18rem"
+                         onclick="window.location.href = '{% url 'main:details_product' item.id %}'">
+                        <img class="card-img-top" src="{{ item.image_prev.url }}" alt="Card image cap">
+                        <div class="card-body">
+                            <div style="height: 4.5rem; overflow: hidden">
+                                <h5 class="card-title">{{ item.name_item }}</h5>
+                            </div>
+                            <span>Релиз: {{ item.release.day }}.{{ item.release.month }}.{{ item.release.year }}</span>
+                            <br/>
+                            <span>Цена: {{ item.price }}$</span>
+                            <br/>
+                            <a href="{% url 'main:remove_favorite' item.id %}">Удалить из избранных</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert-catalog">
+                    <div class="alert alert-danger" role="alert">
+                        Вещей не найдено
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

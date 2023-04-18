@@ -516,3 +516,16 @@ body {
     width: 200px;
     margin-top: 20px;
 }
+
+.content {
+    display: flex;
+    margin: 20px auto;
+    justify-content: center;
+}
+
+.content-title {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    text-align: center;
+}

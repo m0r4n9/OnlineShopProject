@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ subject }}!</title>
+</head>
+<body>
+<div>
+    <h1 style="text-align: center">{{ message }} {{ user }}</h1>
+    <div>
+        <p style="text-align: center">Информация о покупке</p>
+        <div>
+            {% for product in products %}
+                <p><strong>{{ product.name_item }}</strong></p>
+                <ul>
+                    <li>
+                        <p>Производитель: {{ product.company }}</p>
+                    </li>
+                    <li>
+                        <p>Цена: {{ product.price }} $</p>
+                    </li>
+                    <li>
+                        <p>Дата выхода: {{ product.release.day }}:{{ product.release.month }}:{{ product.release.year }}</p>
+                    </li>
+                </ul>
+            {% endfor %}
+
+        </div>
+    </div>
+    <div style="display: flex; justify-content: center">
+        <img style="width: 300px; height: 300px; object-fit: cover;" src="https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg"
+             alt="Котик">
+    </div>
+</div>
+</body>
+</html>
