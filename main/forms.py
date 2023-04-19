@@ -1,38 +1,11 @@
 from django import forms
+import django_filters
 
-from main.models import Category, Review, Product
+from main.models import Category, Review, Product, GENDER_ID
 
 
 class CartAddProductForm(forms.Form):
     update = forms.BooleanField(required=False, initial=False, widget=forms.HiddenInput)
-
-
-class CategoryForm(forms.Form):
-    categories = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple,
-        choices=[(category.id, category) for category in Category.objects.all()],
-        required=False,
-    )
-    gender_choices = [
-        ('W', 'Man'),
-        ('M', 'Woman'),
-        ('U', 'Unisex'),
-    ]
-    gender = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple,
-        choices=gender_choices,
-        required=False,
-    )
-    sort_choices = (
-        ('price_asc', 'Цене (от меньшего к большему)'),
-        ('price_desc', 'Цене (от большего к меньшему)'),
-        ('release_asc', 'Дате выхода (от новых к старым)'),
-        ('release_desc', 'Дате выхода (от старых к новым)'),
-    )
-
-    sort_by = forms.ChoiceField(choices=sort_choices, required=False,
-                                widget=forms.RadioSelect())
-
 
 class ReviewForm(forms.ModelForm):
     class Meta:
@@ -46,3 +19,19 @@ class ReviewFormImages(ReviewForm):
 
     class Meta(ReviewForm.Meta):
         fields = ReviewForm.Meta.fields + ['images']
+
+class ProdfuctFilterSet(django_filters.FilterSet):
+    category = django_filters.ModelMultipleChoiceFilter(queryset=Category.objects.all(),
+                                                        widget=forms.CheckboxSelectMultiple)
+    min_price = django_filters.NumberFilter(field_name='price', lookup_expr='gte')
+    max_price = django_filters.NumberFilter(field_name='price', lookup_expr='lte')
+
+    order_by = django_filters.OrderingFilter(
+        fields=(
+            ('price', 'price'),
+            ('release', 'release'),
+        ),
+    )
+    class Meta:
+        model = Product
+        fields = ['category', 'min_price', 'max_price', 'gender']

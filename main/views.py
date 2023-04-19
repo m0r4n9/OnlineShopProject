@@ -2,6 +2,7 @@ from _decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
@@ -11,7 +12,7 @@ from django.core.mail import send_mail
 from OnlineShopProject import settings
 from users.forms import PersonalInformation
 from .cart import Cart
-from .forms import CartAddProductForm, CategoryForm, ReviewFormImages
+from .forms import CartAddProductForm, ReviewFormImages, ProdfuctFilterSet
 from .models import Product, Company, ProductSize, FavoriteList, Review, Purchase, ReviewPhotos
 
 
@@ -20,43 +21,6 @@ def home(request):
     return render(request, 'main/home.html', {
         'recent_release': recent_release
     })
-
-
-def catalog(request):
-    items_list = Product.objects.all()
-    form_category = CategoryForm(request.POST or None)
-    if request.method == 'POST':
-        if form_category.is_valid():
-            categories = form_category.cleaned_data['categories']
-            if categories:
-                items_list = items_list.filter(category__in=categories)
-
-            gender = form_category.cleaned_data['gender']
-            if gender:
-                items_list = items_list.filter(gender__in=gender)
-
-            filter_by = form_category.cleaned_data['sort_by']
-            if filter_by == 'price_asc':
-                items_list = items_list.order_by('price')
-            elif filter_by == 'price_desc':
-                items_list = items_list.order_by('-price')
-            elif filter_by == 'release_asc':
-                items_list = items_list.order_by('release')
-            elif filter_by == 'release_desc':
-                items_list = items_list.order_by('-release')
-
-    # paginator = Paginator(items_list, 1)
-    # page_number = request.GET.get('page')
-    # products_obj = paginator.get_page(page_number)
-    #
-    # filter_params = request.GET.urlencode()
-
-    return render(request, 'main/catalog.html', {
-        'items_list': items_list,
-        'category_form': form_category,
-        # 'filter_params': filter_params,
-    })
-
 
 def brands(request):
     brands_list = Company.objects.order_by('name_company')
@@ -159,13 +123,17 @@ def cart_detail(request):
             total_price = 0
             for item in cart.cart.values():
                 total_price += Decimal(item['price'] * item['quantity'])
-                product_size[item['id']] = item['size']
+                product_size[item['id']] = {item['size'], item['quantity']}
                 product_ids.append(item['id'])
+            print(product_size)
 
+            print('---')
             for size in product_size.keys():
                 product = Product.objects.get(id=size)
                 products.append(product)
                 size = ProductSize.objects.get(product=product, size=product_size[size])
+                print(size, product_size['quantity'])
+                print(size)
                 size.quantity -= 1
                 size.save()
 
@@ -231,3 +199,34 @@ def send_email_purches(subject, message, userName, products, recipient_list):
         'products': products,
     })
     send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, html_message=html_message)
+
+
+def test(request):
+    products = Product.objects.all()
+    filterset = ProdfuctFilterSet(request.GET, queryset=products)
+
+    if 'price' in request.GET:
+        direction = '-' if request.GET['price'] == 'desc' else ''
+        filterset.qs = filterset.qs.order_by(direction + 'price')
+
+        # sort by release date
+    if 'release_date' in request.GET:
+        direction = '-' if request.GET['release_date'] == 'desc' else ''
+        filterset.qs = filterset.qs.order_by(direction + 'release_date')
+
+    filtered_params = request.GET.copy()
+    if 'page' in filtered_params:
+        del filtered_params['page']
+    filtered_query_string = filtered_params.urlencode()
+
+    # применение пагинации к результатам фильтрации
+    paginator = Paginator(filterset.qs, per_page=1)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'filterset': filterset,
+        'page_obj': page_obj,
+        'filtered_query_string': filtered_query_string
+    }
+    return render(request, 'main/catalog.html', context)
