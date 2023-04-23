@@ -12,12 +12,12 @@ from django.core.mail import send_mail
 from OnlineShopProject import settings
 from users.forms import PersonalInformation
 from .cart import Cart
-from .forms import CartAddProductForm, ReviewFormImages, ProductFilterSet
+from .forms import CartAddProductForm, ReviewFormImages, ProductFilterSet, ReviewFilterSet
 from .models import Product, Company, ProductSize, FavoriteList, Review, Purchase, ReviewPhotos
 
 
 def home(request):
-    recent_release = Product.objects.order_by('release')[:5]
+    recent_release = Product.objects.order_by('-release')[:5]
     return render(request, 'main/home.html', {
         'recent_release': recent_release
     })
@@ -101,6 +101,7 @@ def detail_company(request, company_id):
         'filterset': filterset,
     }
     return render(request, 'main/companyDetail.html', context)
+
 
 @login_required(login_url='/users/login')
 def favorite_products(request):

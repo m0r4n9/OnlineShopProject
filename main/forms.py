@@ -45,3 +45,17 @@ class ProductFilterSet(django_filters.FilterSet):
     class Meta:
         model = Product
         fields = ['category', 'min_price', 'max_price', 'gender']
+
+class ReviewFilterSet(django_filters.FilterSet):
+    order_by = django_filters.OrderingFilter(
+        choices=(
+            ('rating', 'Сначала отрицательные отзывы'),
+            ('-rating', 'Сначала положительные отзыва'),
+            ('-created_at', 'Сначало новые'),
+            ('created_at', 'Сначала старые'),
+        ),
+        fields=(
+            ('rating', 'rating'),
+            ('created_at', 'created_at')
+        )
+    )

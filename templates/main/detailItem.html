@@ -95,7 +95,7 @@
                     </li>
                     <li>
                         <button type="button" class="btn btn-dark" data-bs-toggle="modal"
-                                data-bs-target="#test">
+                                data-bs-target="#reviewList">
                             Отзывы
                         </button>
                     </li>
@@ -149,25 +149,31 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{% url 'main:review' %}" method="post" class="note-form"
-                              enctype="multipart/form-data">
-                            {% csrf_token %}
-                            {{ review }}
-                            <button type="submit">Сохранить</button>
-                        </form>
-                        {#                    ----#}
+                        {% if review %}
+                            <form action="{% url 'main:review' %}" method="post" class="note-form"
+                                  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {{ review }}
+                                <button type="submit">Сохранить</button>
+                            </form>
+                        {% else %}
+                            <div>
+                                <p>Вы не можете написать отзыв так как вы не покупали данный товар</p>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="test" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+
+    <div class="modal fade" id="reviewList" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-reviewTitle fs-5" id="exampleModalLabel">Отзывы</h1>
-                    <h2 class="modal-reviewFilter fs-5">Сортировать по:</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -194,11 +200,10 @@
                             </div>
                         {% endfor %}
                     {% else %}
-                        <p>На данный момент, отзывы на данный товар отсутсвуют.</p>
+                        <p>На данный момент, отзывы на этот товар отсутсвуют.</p>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
-
 {% endblock %}

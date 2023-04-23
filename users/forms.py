@@ -31,7 +31,7 @@ class CustomUserChangeForm(UserChangeForm):
 class UserEdit(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ('first_name', 'last_name', 'email')
+        fields = ('first_name', 'last_name', 'email', 'phone_no')
         widgets = {
             'first_name': TextInput(attrs={
                 'class': "person-input",
@@ -41,6 +41,10 @@ class UserEdit(forms.ModelForm):
             }),
             'email': EmailInput(attrs={
                 'class': "person-input",
+                'style': 'width: 480px;'
+            }),
+            'phone_no': TextInput(attrs={
+                'class': 'person-input',
                 'style': 'width: 480px;'
             })
         }
