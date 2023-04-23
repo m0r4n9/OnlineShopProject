@@ -30,16 +30,16 @@
                     <td style="padding: 0 20px">{{ item.quantity }}</td>
                     <td style="padding: 0 20px"><a
                             href="{% url "main:cart_remove" product.id item.size_id %}">Remove</a></td>
-                    <td style="padding: 0 20px" class="num">${{ product.price }}</td>
+                    <td style="padding: 0 20px" class="num">{{ product.price }} руб.</td>
                     <td style="padding: 0 20px" class="num">{{ item.size }}</td>
-                    <td style="padding: 0 20px" class="num">${{ item.total_price }}</td>
+                    <td style="padding: 0 20px" class="num">{{ item.total_price }} руб.</td>
                 </tr>
             {% endwith %}
         {% endfor %}
         <tr class="total">
             <td colspan="4"></td>
             {% if cart.get_total_price != 0 %}
-                <td class="num" style="padding: 0 20px">${{ cart.get_total_price }}</td>
+                <td class="num" style="padding: 0 20px">{{ cart.get_total_price }} руб.</td>
             {% endif %}
 
         </tr>
