@@ -529,3 +529,57 @@ body {
     font-size: 2rem;
     text-align: center;
 }
+
+.catalog-priceFilter {
+    display: flex;
+}
+
+.catalog-priceFilter input {
+    width: 75px;
+    border-radius: 3px;
+    border: 1px solid gray;
+    margin: 5px;
+}
+
+.catalog-priceFilter input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.company-card {
+    position: relative;
+    margin: 15px auto;
+    height: 250px;
+}
+
+.company-desc {
+    font-size: 1.2rem;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.company-desc p {
+    margin: 0;
+}
+
+.company-card::after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-top: 15px;
+    width: 100vw;
+    height: 1px;
+    background: gray;
+}
+
+.wrapper-catalogItemsCompany {
+    width: 85vw;
+    margin: 5px auto;
+    display: flex;
+}

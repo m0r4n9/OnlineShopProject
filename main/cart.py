@@ -42,9 +42,6 @@ class Cart:
                 if item_data['id'] == product.id:
                     self.cart[item_id]['product'] = product
                     self.cart[item_id]['size'] = ProductSize.objects.get(id=item_data['size_id'])
-                    # self.cart['price'] = Decimal(self.cart[item_id]['price'])
-                    # self.cart[item_id]['total_price'] = self.cart[item_id]['price'] * self.cart[item_id]['quantity']
-                    # yield self.cart[item_id]
 
         for item in self.cart.values():
             item['price'] = Decimal(item['price'])

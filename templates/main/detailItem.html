@@ -32,8 +32,6 @@
                     <p>К сожалению, данного товара сейчас нет в наличии</p>
                 {% endif %}
 
-
-
                 <div>
                     {% if choiceSize %}
                         <form action="{% url 'main:cart_addTrue' product_id=item.id size_id=choiceSize.id %}"
@@ -81,10 +79,19 @@
                         </div>
                     </li>
                     <li>
-                        <button style="margin: 10px 0" type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#createReviewModal">
-                            Написать отзыв
-                        </button>
+                        {% if request.user.is_authenticated %}
+                            <button style="margin: 10px 0" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#createReviewModal">
+                                Написать отзыв
+                            </button>
+                        {% else %}
+                            <button disabled style="margin: 10px 0" type="button" class="btn btn-dark"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#createReviewModal">
+                                Написать отзыв
+                            </button>
+                        {% endif %}
+
                     </li>
                     <li>
                         <button type="button" class="btn btn-dark" data-bs-toggle="modal"
@@ -136,20 +143,21 @@
     <div class="modal fade" id="createReviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Напишите свой отзыв</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    {#                    ----#}
-                    <form action="{% url 'main:review' %}" method="post" class="note-form"
-                          enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ review }}
-                        <button type="submit">Сохранить</button>
-                    </form>
-                    {#                    ----#}
-                </div>
+                {% if request.user.is_authenticated %}
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Напишите свой отзыв</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'main:review' %}" method="post" class="note-form"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ review }}
+                            <button type="submit">Сохранить</button>
+                        </form>
+                        {#                    ----#}
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -188,8 +196,6 @@
                     {% else %}
                         <p>На данный момент, отзывы на данный товар отсутсвуют.</p>
                     {% endif %}
-
-
                 </div>
             </div>
         </div>

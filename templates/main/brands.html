@@ -3,12 +3,25 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <ul>
-    {% for brand in brands_list %}
-        <li>
-        {{ brand.name_company }}
-        </li>
-    {% endfor %}
+    <div>
+        <div style="text-align: center; margin-top: 10px;">
+            <h1>Лист компаний</h1>
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 10px;">
+            <ul class="list-group">
+                {% for brand in brands_list %}
+                    <li
+                            class="list-group-item d-flex justify-content-between align-items-center"
+                            style="width: 500px;"
+                            onclick="window.location.href = '{% url 'main:company_detail' brand.pk %}'"
+                    >
+                        {{ brand.name_company }}
+                        <span class="badge bg-primary rounded-pill">{{ brand.get_length_products }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 
-    </ul>
+
 {% endblock %}

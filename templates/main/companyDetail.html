@@ -1,0 +1,70 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+    {{ company }}
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="company-card">
+            <div style="text-align: center">
+                <img src="{{ company.image_link }}" style="width: 150px; height: 150px;" alt="">
+            </div>
+            <div class="company-desc">
+                <p>Год основания: {{ company.date_foundation }}</p>
+                <p>Страна: {{ company.country }}</p>
+            </div>
+        </div>
+        <div>
+            <h1 style="text-align: center;">Товары</h1>
+        </div>
+        <div class="wrapper-catalogItemsCompany">
+            <div class="catalog-filters">
+                <form method="get">
+                    <div style="border-bottom: 1px solid gray; padding-bottom: 5px">
+                        <p style="margin: 5px 0; font-weight: 600">Категории</p>
+                        {{ filterset.form.category }}
+                    </div>
+                    <div style="border-bottom: 1px solid gray; padding-bottom: 5px">
+                        <p style="margin: 10px 0; font-weight: 600">Цена</p>
+                        <div style="display: flex; justify-content: space-around">
+                            <span>От</span>
+                            <span>До</span>
+                        </div>
+                        <div class="catalog-priceFilter">
+                            {{ filterset.form.min_price }}
+                            {{ filterset.form.max_price }}
+                        </div>
+                    </div>
+                    <div>
+                        <p style="margin: 10px 0; font-weight: 600">Сортировать по:</p>
+                        {{ filterset.form.order_by }}
+                    </div>
+
+                    <div style="display: flex; flex-direction: column;">
+                        <button type="submit" class="btn btn-dark" style="margin: 15px 0 5px 0;">Применить</button>
+                        <a href="{% url 'main:company_detail' company.id %}" style="margin: 10px 0;">Сбросить
+                            фильтры</a>
+                    </div>
+                </form>
+            </div>
+            <div class="catalog-items">
+                {% for product in produts %}
+                    <div class="card" style="width: 15rem"
+                         onclick="window.location.href = '{% url 'main:details_product' product.id %}'">
+                        <img class="card-img-top" src="{{ product.image_prev.url }}" alt="Card image cap">
+                        <div class="card-body">
+                            <div style="height: 4.5rem; overflow: hidden">
+                                <h5 class="card-title">{{ product.name_item }}</h5>
+                            </div>
+                            <span>Релиз: {{ product.release.day }}.{{ product.release.month }}.{{ product.release.year }}</span>
+                            <br/>
+                            <span>Цена: {{ product.price }} руб.</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

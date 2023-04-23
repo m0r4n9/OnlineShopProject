@@ -6,23 +6,43 @@
         <div>
             <div class="catalog-header">
                 Header
+{#                {% if request.user.is_superuser %}#}
+{#                    <p>Вы имеете права админа</p>#}
+{#                {% endif %} #}
             </div>
             <div class="wrapper-catalog">
                 <div class="catalog-filters">
                     <form method="get">
-                        <p>Категории</p>
-                        {{ filterset.form.category }}
-                        {{ filterset.form.min_price }}
-                        {{ filterset.form.max_price }}
-                        {{ filterset.form.order_by }}
-                        <button type="submit">Применить</button>
+                        <div style="border-bottom: 1px solid gray; padding-bottom: 5px">
+                            <p style="margin: 5px 0; font-weight: 600">Категории</p>
+                            {{ filterset.form.category }}
+                        </div>
+                        <div style="border-bottom: 1px solid gray; padding-bottom: 5px">
+                            <p style="margin: 10px 0; font-weight: 600">Цена</p>
+                            <div style="display: flex; justify-content: space-around">
+                                <span>От</span>
+                                <span>До</span>
+                            </div>
+                            <div class="catalog-priceFilter">
+                                {{ filterset.form.min_price }}
+                                {{ filterset.form.max_price }}
+                            </div>
+                        </div>
+                        <div>
+                            <p style="margin: 10px 0; font-weight: 600">Сортировать по:</p>
+                            {{ filterset.form.order_by }}
+                        </div>
+
+                        <div style="display: flex; flex-direction: column;">
+                            <button type="submit" class="btn btn-dark" style="margin: 15px 0 5px 0;">Применить</button>
+                            <a href="{% url 'main:catalog' %}" style="margin: 10px 0;">Сбросить фильтры</a>
+                        </div>
                     </form>
                 </div>
-
                 <div class="catalog-items">
                     {% if filterset.qs %}
                         {% for item in page_obj %}
-                            <div class="card" style="width: 18rem"
+                            <div class="card" style="width: 14rem"
                                  onclick="window.location.href = '{% url 'main:details_product' item.id %}'">
                                 <img class="card-img-top" src="{{ item.image_prev.url }}" alt="Card image cap">
                                 <div class="card-body">
@@ -46,15 +66,15 @@
             </div>
             <div class="pagination">
                 <span class="step-links">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">first</a>
-                    <a href="?page={{ page_obj.previous_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">previous</a>
-                {% endif %}
-                <span class="current-page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">next</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">last</a>
-                {% endif %}
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">previous</a>
+                    {% endif %}
+                    <span class="current-page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">next</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">last</a>
+                        {% endif %}
                 </span>
             </div>
         </div>

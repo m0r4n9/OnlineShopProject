@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 from OnlineShopProject import settings
 from users.forms import PersonalInformation
 from .cart import Cart
-from .forms import CartAddProductForm, ReviewFormImages, ProdfuctFilterSet
+from .forms import CartAddProductForm, ReviewFormImages, ProductFilterSet
 from .models import Product, Company, ProductSize, FavoriteList, Review, Purchase, ReviewPhotos
 
 
@@ -33,7 +33,7 @@ def brands(request):
 
 def catalog(request):
     products = Product.objects.all()
-    filterset = ProdfuctFilterSet(request.GET, queryset=products)
+    filterset = ProductFilterSet(request.GET, queryset=products)
 
     if 'price' in request.GET:
         direction = '-' if request.GET['price'] == 'desc' else ''
@@ -63,44 +63,44 @@ def catalog(request):
 def detail(request, item_id, size_id=0):
     item = Product.objects.get(pk=item_id)
     sizes = ProductSize.objects.filter(product=item, quantity__gt=0).order_by('size')
-    purchases = Purchase.objects.filter(products__in=[item], user=request.user)
     review_list = Review.objects.filter(product=item).order_by('-created_at')
     cart_product_form = CartAddProductForm()
     include_item = False
+    purchases = None
     review = None
 
-    if purchases:
-        review = ReviewFormImages(initial={'product': item})
-
     if request.user.is_authenticated:
+        purchases = Purchase.objects.filter(products__in=[item], user=request.user)
         is_favorite = FavoriteList.objects.get(user=request.user).products.all().filter(id=item_id)
         if is_favorite:
             include_item = True
 
-    if size_id != 0:
-        context = {
-            'item': item,
-            'sizes': sizes,
-            'choiceSize': sizes.get(pk=size_id),
-            'cart_product_form': cart_product_form,
-            'include_item': include_item,
-            'review': review,
-            'purchases': purchases,
-            'review_list': review_list,
-        }
-    else:
-        context = {
-            'item': item,
-            'sizes': sizes,
-            'cart_product_form': cart_product_form,
-            'include_item': include_item,
-            'review': review,
-            'purchases': purchases,
-            'review_list': review_list,
-        }
+    if purchases:
+        review = ReviewFormImages(initial={'product': item})
 
+    context = {
+        'item': item,
+        'sizes': sizes,
+        'choiceSize': sizes.get(pk=size_id) if size_id != 0 else None,
+        'cart_product_form': cart_product_form,
+        'include_item': include_item,
+        'review': review,
+        'review_list': review_list,
+    }
     return render(request, 'main/detailItem.html', context)
 
+
+def detail_company(request, company_id):
+    company = Company.objects.get(pk=company_id)
+    products = Product.objects.filter(company_id=company.id)
+    filterset = ProductFilterSet(request.GET, queryset=products)
+
+    context = {
+        'company': company,
+        'produts': filterset.qs,
+        'filterset': filterset,
+    }
+    return render(request, 'main/companyDetail.html', context)
 
 @login_required(login_url='/users/login')
 def favorite_products(request):
@@ -176,10 +176,10 @@ def cart_detail(request):
             Purchase.objects.create(user=userPurches, total_price=total_price, street=userPurches.street,
                                     city=userPurches.city,
                                     postcode=userPurches.postcode).products.set(products)
-            # send_email_purches(subject='Покупка', message='Спасибо за покупку', userName=request.user,
-            #                    products=products,
-            #                    recipient_list=[request.user.email])
-            # cart.clear()
+            send_email_purches(subject='Покупка', message='Спасибо за покупку', userName=request.user,
+                               products=products,
+                               recipient_list=[request.user.email])
+            cart.clear()
             return redirect('main:cart')
     else:
         form = PersonalInformation(instance=request.user)
@@ -191,7 +191,6 @@ def cart_detail(request):
 
 @login_required(login_url='/users/login')
 def add_favorite(request, item_id):
-    favorite = FavoriteList.objects.get(user=request.user)
     product = Product.objects.get(id=item_id)
     favorite_list = FavoriteList.objects.get(user=request.user)
     favorite_list.products.add(product)
@@ -200,7 +199,6 @@ def add_favorite(request, item_id):
 
 @login_required(login_url='/users/login')
 def remove_favorite(request, item_id):
-    favorite = FavoriteList.objects.get(user=request.user)
     product = Product.objects.get(id=item_id)
     favorite_list = FavoriteList.objects.get(user=request.user)
     favorite_list.products.remove(product)
