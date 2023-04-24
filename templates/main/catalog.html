@@ -1,15 +1,16 @@
 {% extends 'main/layout.html' %}
-{% block title %}Test pagination{% endblock %}
+{% block title %}Каталог{% endblock %}
 {% block content %}
 
     <div style="display: flex; margin: 30px auto; position: relative; width: 80vw;">
         <div>
-            <div class="catalog-header">
-                Header
-{#                {% if request.user.is_superuser %}#}
-{#                    <p>Вы имеете права админа</p>#}
-{#                {% endif %} #}
-            </div>
+            {% if sale_check %}
+                <div style="width: 80vw; background: rgba(255,0,0,0.49); text-align: center; font-size: 1.2rem"
+                     class="catalog-header">
+                    На первую покупки скидка 10%!!!
+                </div>
+            {% endif %}
+
             <div class="wrapper-catalog">
                 <div class="catalog-filters">
                     <form method="get">
@@ -65,17 +66,17 @@
                 </div>
             </div>
             <div class="pagination">
-                <span class="step-links">
+                <div class="step-links">
                     {% if page_obj.has_previous %}
-                        <a href="?page=1{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">first</a>
-                        <a href="?page={{ page_obj.previous_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">previous</a>
+{#                        <a href="?page=1{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">Первая</a>#}
+                        <a href="?page={{ page_obj.previous_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}"> < </a>
                     {% endif %}
-                    <span class="current-page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
-                        {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">next</a>
-                            <a href="?page={{ page_obj.paginator.num_pages }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">last</a>
-                        {% endif %}
-                </span>
+                    <span class="current-page">Страница {{ page_obj.number }}</span>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}"> > </a>
+{#                        <a href="?page={{ page_obj.paginator.num_pages }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">Последняя</a>#}
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

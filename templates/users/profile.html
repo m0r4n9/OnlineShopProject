@@ -17,12 +17,12 @@
     <div style="margin-top: 30px">
         <div class="person-information">
             <div class="person-description-email" style="display: flex; flex-direction: column; align-items: center">
-                <label for="email" class="person-label">Почта</label>
+                <label for="email" class="person-label mailProfile">Почта</label>
                 <input disabled type="email" class="person-input" id="email" value="{{ user.email }}"
                        style="width: 480px" placeholder="Введите почту">
             </div>
             <div class="person-description-email" style="display: flex; flex-direction: column; align-items: center">
-                <label for="email" class="person-label" style="margin-top: 15px">Номер</label>
+                <label for="email" class="person-label phoneProfile" style="margin-top: 15px">Номер</label>
                 <input disabled type="email" class="person-input" id="email" value="{{ user.phone_no }}"
                        style="width: 480px" placeholder="Введите телефон">
             </div>
@@ -34,4 +34,13 @@
         <br/>
         <a class="btn btn-secondary" style="margin-top: 15px" href="{% url 'users:profile_edit' %}">Изменить данные</a>
     </div>
+    {% if request.user.is_authenticated %}
+        {% if request.user.is_superuser %}
+            <div>
+                <a href="{% url 'main:review_list' %}">
+                    Лист со всеми отзывами для редактирования
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
 {% endblock %}

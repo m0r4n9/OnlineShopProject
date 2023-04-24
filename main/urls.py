@@ -21,5 +21,6 @@ urlpatterns = [
                   path('catalog/goods/favorite_<int:item_id>', views.add_favorite, name='favorite_add'),
                   path('catalog/goods/favorite_remove_<int:item_id>', views.remove_favorite, name='remove_favorite'),
                   path('review/', views.add_review, name='review'),
-                  # path('test/', views.test, name='test')
+                  path('reviewList/', views.list_reviews, name='review_list'),
+                  path('review/remove/<int:review_id>', views.remove_review, name='remove_review'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

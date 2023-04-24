@@ -8,7 +8,7 @@
     <div class="listPurchases-wrapper">
         <div class="listPurchases">
             <div>
-                <h1>Ваши покупки</h1>
+                <h1 style="text-align: center; margin-top: 10px;">Ваши покупки</h1>
             </div>
             <div>
                 <div style="display: flex; justify-content: center; margin-top: 10px;">
@@ -22,6 +22,10 @@
                                 Покупка сделанная в {{ purchase.created_at }}
                                 <span class="badge bg-primary rounded-pill">Кол-во товаров: {{ purchase.count_products }}</span>
                             </li>
+                        {% empty %}
+                            <div class="alert alert-light" role="alert">
+                                Вы еще не совершили ни одну покупку
+                            </div>
                         {% endfor %}
                     </ul>
                 </div>

@@ -1,0 +1,31 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+    Лист со всеми отзывами
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div style="text-align: center;">
+            {% for review in reviews %}
+                <div style="padding: 10px; border: 1px solid black; width: 500px; margin: 20px auto;">
+                    <ul>
+                        <li>Id: {{ review.id }}</li>
+                        <li>{{ review.product }}</li>
+                        <li>{{ review.rating }}</li>
+                        <li>{{ review.comment }}</li>
+                    </ul>
+                    <div>
+                        {% for photo in review.get_all_photos %}
+                            <img src="{{ photo.images.url }}"
+                                 alt=""
+                                 class="review-photo"
+                            >
+                        {% endfor %}
+                    </div>
+                <a href="{% url 'main:remove_review' review.id %}" class="btn btn-danger" style="margin-top: 5px;">Удалить отзыв</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

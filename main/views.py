@@ -1,7 +1,7 @@
 from _decimal import Decimal
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 from OnlineShopProject import settings
 from users.forms import PersonalInformation
 from .cart import Cart
-from .forms import CartAddProductForm, ReviewFormImages, ProductFilterSet, ReviewFilterSet
+from .forms import CartAddProductForm, ReviewFormImages, ProductFilterSet
 from .models import Product, Company, ProductSize, FavoriteList, Review, Purchase, ReviewPhotos
 
 
@@ -33,29 +33,38 @@ def brands(request):
 
 def catalog(request):
     products = Product.objects.all()
-    filterset = ProductFilterSet(request.GET, queryset=products)
+    filter_set = ProductFilterSet(request.GET, queryset=products)
 
     if 'price' in request.GET:
         direction = '-' if request.GET['price'] == 'desc' else ''
-        filterset.qs = filterset.qs.order_by(direction + 'price')
+        filter_set.qs = filter_set.qs.order_by(direction + 'price')
 
     if 'release_date' in request.GET:
         direction = '-' if request.GET['release_date'] == 'desc' else ''
-        filterset.qs = filterset.qs.order_by(direction + 'release_date')
+        filter_set.qs = filter_set.qs.order_by(direction + 'release_date')
 
     filtered_params = request.GET.copy()
     if 'page' in filtered_params:
         del filtered_params['page']
     filtered_query_string = filtered_params.urlencode()
 
-    paginator = Paginator(filterset.qs, per_page=6)
+    paginator = Paginator(filter_set.qs, per_page=6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    if request.user.is_authenticated:
+        if Purchase.objects.filter(user=request.user):
+            sale = False
+        else:
+            sale = True
+    else:
+        sale = True
+
     context = {
-        'filterset': filterset,
+        'filterset': filter_set,
         'page_obj': page_obj,
-        'filtered_query_string': filtered_query_string
+        'filtered_query_string': filtered_query_string,
+        'sale_check': sale,
     }
     return render(request, 'main/catalog.html', context)
 
@@ -136,11 +145,18 @@ def cart_remove(request, product_id, size_id):
     return redirect('main:cart')
 
 
+@login_required(login_url='/users/login')
 def cart_detail(request):
     cart = Cart(request)
+    length_cart = len(cart.cart)
+    if Purchase.objects.filter(user=request.user):
+        total_price = cart.get_total_price()
+    else:
+        total_price = cart.get_total_price() * Decimal("0.90")
+
     if request.method == 'POST':
         form = PersonalInformation(request.POST, instance=request.user)
-        if form.is_valid() and len(cart.cart) != 0:
+        if form.is_valid() and length_cart != 0:
             for field in form.cleaned_data:
                 if not form.cleaned_data[field]:
                     form.add_error(field, 'Это поле обязательное')
@@ -167,22 +183,27 @@ def cart_detail(request):
                     })
                 size.save()
 
-            userPurches = request.user
-            Purchase.objects.create(user=userPurches, total_price=total_price, street=userPurches.street,
-                                    city=userPurches.city,
+            if not Purchase.objects.filter(user=request.user):
+                total_price *= Decimal("0.90")
+
+            Purchase.objects.create(user=request.user, total_price=total_price, street=request.user.street,
+                                    city=request.user.city,
                                     products=cart.cart,
-                                    postcode=userPurches.postcode).check_products.set(list_products),
+                                    postcode=request.user.postcode).check_products.set(list_products),
 
             # send_email_purches(subject='Покупка', message='Спасибо за покупку', userName=request.user,
             #                    products=products,
             #                    recipient_list=[request.user.email])
-            # cart.clear()
+            cart.clear()
             return redirect('main:cart')
     else:
         form = PersonalInformation(instance=request.user)
+
     return render(request, 'main/cart.html', {
         'cart': cart,
-        'form': form
+        'form': form,
+        'total_price': total_price,
+        'length_cart': length_cart,
     })
 
 
@@ -244,11 +265,24 @@ def purchase_detail(request, purchase_id):
     list_products = []
     for key in purchase.products.values():
         product = Product.objects.get(id=key['id'])
-        list_products.append((product, key['size']))
-    for product in list_products:
-        print(product[0].name_item)
+        list_products.append((product, key['size'], key['quantity']))
     context = {
         'purchase': purchase,
         'list_products': list_products,
     }
     return render(request, 'main/purchaseDetail.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def list_reviews(request):
+    reviews = Review.objects.all().order_by('-created_at')
+    context = {
+        'reviews': reviews,
+    }
+    return render(request, 'main/reviewList.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def remove_review(request, review_id):
+    review = Review.objects.get(id=review_id)
+    review.delete()
+    # Review.objects.save()
+    return redirect('main:review_list')

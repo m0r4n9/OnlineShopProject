@@ -7,8 +7,8 @@
 {% block content %}
     <div class="detailPurchase-wrapper">
         <div class="detailPurchase">
-            <div>
-                Ваша покупка
+            <div class="detailPurchase-title">
+                <h1>Ваша покупка</h1>
             </div>
             <div class="detailPurchase-content">
                 <div class="detailPurchase-personalInfo">
@@ -20,10 +20,11 @@
                     </ul>
                 </div>
                 <div class="detailPurchase-items">
-                    {% for product, size in list_products %}
+                <p style="text-align: center; font-size: 1.5rem; margin-top: 20px;">Информация о товарах:</p>
+                    {% for product, size, quantity in list_products %}
                         <ul>
                             <li>
-                                Название товара: {{ product.name_item }}
+                                <strong>Название товара: {{ product.name_item }}</strong>
                             </li>
                             <li>
                                 Размер: {{ size }}
@@ -31,9 +32,14 @@
                             <li>
                                 Цена: {{ product.price }}
                             </li>
+                        <li>
+                            Кол-во: {{ quantity }}
+                        </li>
                         </ul>
                     {% endfor %}
-
+                    <div>
+                        <h2>Итоговая стоимость: {{ purchase.total_price }}</h2>
+                    </div>
                 </div>
             </div>
         </div>

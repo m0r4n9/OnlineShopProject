@@ -4,8 +4,8 @@ body {
 }
 
 .catalog-header {
-    display: flex;
-    justify-content: right;
+    /*display: flex;*/
+    /*justify-content: right;*/
 
 }
 
@@ -225,11 +225,9 @@ body {
     padding: 10px;
 }
 
-/*.person-label {*/
-/*    display: block;*/
-/*    text-align: start;*/
-/*    margin: 0 0 5px 5px;*/
-/*}*/
+.mailProfile, .phoneProfile {
+    margin-right: 40px;
+}
 
 .person-input {
     width: 230px;
@@ -582,4 +580,56 @@ input[type=number] {
     width: 85vw;
     margin: 5px auto;
     display: flex;
+}
+
+.detailPurchase-title {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.detailPurchase-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.detailPurchase-personalInfo {
+    /*text-align: center;*/
+}
+
+.detailPurchase-personalInfo ul {
+    list-style: none;
+}
+
+.detailPurchase-items ul {
+    list-style: none;
+}
+
+.detailPurchase-items li::before {
+    content: '♥︎';
+}
+
+.pagination {
+    /*border: 1px solid black;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.step-links a {
+    font-size: 1.5rem;
+    text-decoration: none;
+    color: black;
+}
+
+.step-links span {
+    font-size: 1.3rem;
+}
+
+.current-page {
+    color: #565656;
+    font-style: italic;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.05);
+
 }
