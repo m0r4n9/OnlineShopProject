@@ -165,12 +165,16 @@ def cart_detail(request):
                         'form': form,
                     })
             form.save()
+            request.user.street = form.cleaned_data['street']
+            request.user.city = form.cleaned_data['city']
+            request.user.city = form.cleaned_data['postcode']
+            request.user.phone_no = form.cleaned_data['phone_no']
 
             total_price = 0
             list_products = []
 
             for item in cart.cart.values():
-                total_price += Decimal(item['price'] * item['quantity'])
+                total_price += Decimal(item['price']) * Decimal(item['quantity'])
                 product = Product.objects.get(id=item['id'])
                 list_products.append(product)
                 size = ProductSize.objects.get(product=product, size=item['size'])
@@ -180,12 +184,14 @@ def cart_detail(request):
                     return render(request, 'main/cart.html', {
                         'cart': cart,
                         'form': form,
+                        'alert': True,
+                        'avalible': size.quantity,
+                        'product_name': product.name_item,
                     })
                 size.save()
-
             if not Purchase.objects.filter(user=request.user):
                 total_price *= Decimal("0.90")
-
+            print(total_price)
             Purchase.objects.create(user=request.user, total_price=total_price, street=request.user.street,
                                     city=request.user.city,
                                     products=cart.cart,
@@ -195,7 +201,11 @@ def cart_detail(request):
             #                    products=products,
             #                    recipient_list=[request.user.email])
             cart.clear()
-            return redirect('main:cart')
+            # return redirect('main:cart')
+            return render(request, 'main/cart.html', {
+                'form': form,
+                'purchases_compleate': True
+            })
     else:
         form = PersonalInformation(instance=request.user)
 
@@ -272,6 +282,7 @@ def purchase_detail(request, purchase_id):
     }
     return render(request, 'main/purchaseDetail.html', context)
 
+
 @user_passes_test(lambda u: u.is_superuser)
 def list_reviews(request):
     reviews = Review.objects.all().order_by('-created_at')
@@ -280,9 +291,9 @@ def list_reviews(request):
     }
     return render(request, 'main/reviewList.html', context)
 
+
 @user_passes_test(lambda u: u.is_superuser)
 def remove_review(request, review_id):
     review = Review.objects.get(id=review_id)
     review.delete()
-    # Review.objects.save()
     return redirect('main:review_list')

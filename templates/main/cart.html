@@ -6,6 +6,15 @@
 
 {% block content %}
     <h1 style="text-align: center; margin: 10px 0;">Корзина</h1>
+    {% if alert %}
+        <div>
+            <p>Вы выбрали количество больше, чем есть на складе. На данный момент доступно
+                только: {{ avalible }} {{ product_name }}</p>
+        </div>
+    {% endif %}
+    {% if purchases_compleate %}
+        <h2>Спасибо за покупку! Данные о покупке можно посмотреть в разделе "покупки"</h2>
+    {% endif %}
     <table class="cart" style="margin: 0 auto">
         <thead>
         <tr>
@@ -31,7 +40,7 @@
                     <td style="padding: 0 20px"><a
                             href="{% url "main:cart_remove" product.id item.size_id %}">Remove</a></td>
                     <td style="padding: 0 20px" class="num">{{ product.price }} руб.</td>
-                    <td style="padding: 0 20px" class="num">{{ item.size }}</td>
+                    <td style="padding: 0 20px" class="num">{{ item.size.size }}</td>
                     <td style="padding: 0 20px" class="num">{{ item.total_price }} руб.</td>
                 </tr>
             {% endwith %}

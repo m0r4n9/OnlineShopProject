@@ -70,6 +70,12 @@ class Product(models.Model):
     def get_all_photos(self):
         return ProductPhotos.objects.filter(product_parent=self)
 
+    def check_count_size(self):
+        if ProductSize.objects.filter(product=self).values('quantity'):
+            return True
+        else:
+            return False
+
 
 class ProductSize(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -77,7 +83,7 @@ class ProductSize(models.Model):
     quantity = models.PositiveIntegerField()
 
     def __str__(self):
-        return self.size
+        return f'{self.size} - {self.product}'
 
 
 class ProductPhotos(models.Model):
@@ -122,7 +128,7 @@ class Purchase(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     check_products = models.ManyToManyField(Product)
     products = models.JSONField(default=dict)
-    total_price = models.DecimalField(max_digits=8, decimal_places=2)
+    total_price = models.DecimalField(max_digits=16, decimal_places=2)
     street = models.CharField(max_length=100, default=None)
     city = models.CharField(max_length=100, default=None)
     postcode = models.CharField(max_length=20, default=None)
@@ -133,4 +139,7 @@ class Purchase(models.Model):
         return f'Order {self.id}'
 
     def count_products(self):
-        return len(self.products)
+        quantity = 0
+        for count in self.products.values():
+            quantity += count['quantity']
+        return quantity

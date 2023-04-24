@@ -7,6 +7,7 @@ from django.contrib import messages
 from main.models import FavoriteList
 from users.forms import CustomUserCreationForm, UserEdit
 
+
 # Create your views here.
 def registration(request):
     context = {}
@@ -72,4 +73,3 @@ def profile_edit(request):
     else:
         form = UserEdit(instance=request.user)
     return render(request, 'users/changePersonInformation.html', {'form': form})
-

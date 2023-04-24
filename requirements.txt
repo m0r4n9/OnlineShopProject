@@ -5,6 +5,5 @@ django-environ==0.10.0
 django-filter==23.1
 Pillow==9.4.0
 psycopg2==2.9.5
-signals==0.0.2
 soupsieve==2.4
 sqlparse==0.4.3

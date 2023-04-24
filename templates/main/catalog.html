@@ -43,7 +43,7 @@
                 <div class="catalog-items">
                     {% if filterset.qs %}
                         {% for item in page_obj %}
-                            <div class="card" style="width: 14rem"
+                            <div class="card" style="width: 14rem;"
                                  onclick="window.location.href = '{% url 'main:details_product' item.id %}'">
                                 <img class="card-img-top" src="{{ item.image_prev.url }}" alt="Card image cap">
                                 <div class="card-body">
@@ -52,7 +52,12 @@
                                     </div>
                                     <span>Релиз: {{ item.release.day }}.{{ item.release.month }}.{{ item.release.year }}</span>
                                     <br/>
-                                    <span>Цена: {{ item.price }} руб.</span>
+                                    {% if item.check_count_size %}
+                                        <span>Цена: {{ item.price }} руб.</span>
+                                    {% else %}
+                                        <span>Товара нет в наличии</span>
+                                    {% endif %}
+
                                 </div>
                             </div>
                         {% empty %}
@@ -68,13 +73,15 @@
             <div class="pagination">
                 <div class="step-links">
                     {% if page_obj.has_previous %}
-{#                        <a href="?page=1{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">Первая</a>#}
-                        <a href="?page={{ page_obj.previous_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}"> < </a>
+                        {#                        <a href="?page=1{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">Первая</a>#}
+                        <a href="?page={{ page_obj.previous_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">
+                            < </a>
                     {% endif %}
                     <span class="current-page">Страница {{ page_obj.number }}</span>
                     {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}"> > </a>
-{#                        <a href="?page={{ page_obj.paginator.num_pages }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">Последняя</a>#}
+                        <a href="?page={{ page_obj.next_page_number }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">
+                            > </a>
+                        {#                        <a href="?page={{ page_obj.paginator.num_pages }}{% if filtered_query_string %}&{{ filtered_query_string }}{% endif %}">Последняя</a>#}
                     {% endif %}
                 </div>
             </div>
