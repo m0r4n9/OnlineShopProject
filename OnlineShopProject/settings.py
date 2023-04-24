@@ -29,6 +29,7 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['m0r4n.pythonanywhere.com']
 
 # Application definition
 
@@ -101,6 +102,16 @@ DATABASES = {
         'PORT': env("DB_PORT"),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'm0r4n$SHOPDJANGO',
+#         'USER': 'm0r4n',
+#         'PASSWORD': 'wakfeq-jubtYw-wihvo1',
+#         'HOST': 'm0r4n.mysql.pythonanywhere-services.com',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

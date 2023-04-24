@@ -23,4 +23,6 @@ urlpatterns = [
                   path('review/', views.add_review, name='review'),
                   path('reviewList/', views.list_reviews, name='review_list'),
                   path('review/remove/<int:review_id>', views.remove_review, name='remove_review'),
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+              ]
+
+# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
