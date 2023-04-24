@@ -70,7 +70,7 @@ def detail(request, item_id, size_id=0):
     review = None
 
     if request.user.is_authenticated:
-        purchases = Purchase.objects.filter(products__in=[item], user=request.user)
+        purchases = Purchase.objects.filter(check_products__in=[item], user=request.user)
         is_favorite = FavoriteList.objects.get(user=request.user).products.all().filter(id=item_id)
         if is_favorite:
             include_item = True
@@ -150,37 +150,33 @@ def cart_detail(request):
                     })
             form.save()
 
-            product_size = {}
-            product_quantity = {}
             total_price = 0
+            list_products = []
+
             for item in cart.cart.values():
                 total_price += Decimal(item['price'] * item['quantity'])
-                product_size[item['id']] = item['size']
-                product_quantity[item['id']] = item['quantity']
-
-            products = []
-            for product_id in product_size.keys():
-                product = Product.objects.get(id=product_id)
-                size = ProductSize.objects.get(product=product, size=product_size[product_id])
-                if size.quantity >= product_quantity[product_id]:
-                    size.quantity -= product_quantity[product_id]
+                product = Product.objects.get(id=item['id'])
+                list_products.append(product)
+                size = ProductSize.objects.get(product=product, size=item['size'])
+                if size.quantity >= item['quantity']:
+                    size.quantity -= item['quantity']
                 else:
-                    # Надо тут сделать обработку ошибки
                     return render(request, 'main/cart.html', {
                         'cart': cart,
                         'form': form,
                     })
-                products.append(product)
                 size.save()
 
             userPurches = request.user
             Purchase.objects.create(user=userPurches, total_price=total_price, street=userPurches.street,
                                     city=userPurches.city,
-                                    postcode=userPurches.postcode).products.set(products)
-            send_email_purches(subject='Покупка', message='Спасибо за покупку', userName=request.user,
-                               products=products,
-                               recipient_list=[request.user.email])
-            cart.clear()
+                                    products=cart.cart,
+                                    postcode=userPurches.postcode).check_products.set(list_products),
+
+            # send_email_purches(subject='Покупка', message='Спасибо за покупку', userName=request.user,
+            #                    products=products,
+            #                    recipient_list=[request.user.email])
+            # cart.clear()
             return redirect('main:cart')
     else:
         form = PersonalInformation(instance=request.user)
@@ -233,3 +229,26 @@ def send_email_purches(subject, message, userName, products, recipient_list):
         'products': products,
     })
     send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, html_message=html_message)
+
+
+def list_purchases(request):
+    purchases = Purchase.objects.filter(user=request.user).order_by('-created_at')
+    context = {
+        'list_purchases': purchases
+    }
+    return render(request, 'main/listPurchases.html', context)
+
+
+def purchase_detail(request, purchase_id):
+    purchase = Purchase.objects.get(pk=purchase_id)
+    list_products = []
+    for key in purchase.products.values():
+        product = Product.objects.get(id=key['id'])
+        list_products.append((product, key['size']))
+    for product in list_products:
+        print(product[0].name_item)
+    context = {
+        'purchase': purchase,
+        'list_products': list_products,
+    }
+    return render(request, 'main/purchaseDetail.html', context)

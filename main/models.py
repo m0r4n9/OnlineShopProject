@@ -120,9 +120,9 @@ class ReviewPhotos(models.Model):
 
 class Purchase(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    products = models.ManyToManyField(Product)
+    check_products = models.ManyToManyField(Product)
+    products = models.JSONField(default=dict)
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
-
     street = models.CharField(max_length=100, default=None)
     city = models.CharField(max_length=100, default=None)
     postcode = models.CharField(max_length=20, default=None)
@@ -131,3 +131,6 @@ class Purchase(models.Model):
 
     def __str__(self):
         return f'Order {self.id}'
+
+    def count_products(self):
+        return len(self.products)

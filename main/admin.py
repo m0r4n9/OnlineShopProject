@@ -43,7 +43,7 @@ class PurchesAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Покупатель', {'fields': ('user',)}),
         ('Адресс доставки', {'fields': ('city', 'street', 'postcode')}),
-        ("Список товаров", {'fields': ('products', 'total_price')}),
+        ("Список товаров", {'fields': ('products', 'check_products', 'total_price')}),
         ("Время", {'fields': ('created_at',)}),
     ]
 

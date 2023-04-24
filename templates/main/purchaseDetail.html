@@ -1,0 +1,41 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+    Покупка от {{ purchase.created_at }}
+{% endblock %}
+
+{% block content %}
+    <div class="detailPurchase-wrapper">
+        <div class="detailPurchase">
+            <div>
+                Ваша покупка
+            </div>
+            <div class="detailPurchase-content">
+                <div class="detailPurchase-personalInfo">
+                    <p>Персональная информация о покупки</p>
+                    <ul>
+                        <li>Улица: {{ purchase.street }}</li>
+                        <li>Город: {{ purchase.city }}</li>
+                        <li>Почтовый индекс: {{ purchase.postcode }}</li>
+                    </ul>
+                </div>
+                <div class="detailPurchase-items">
+                    {% for product, size in list_products %}
+                        <ul>
+                            <li>
+                                Название товара: {{ product.name_item }}
+                            </li>
+                            <li>
+                                Размер: {{ size }}
+                            </li>
+                            <li>
+                                Цена: {{ product.price }}
+                            </li>
+                        </ul>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
