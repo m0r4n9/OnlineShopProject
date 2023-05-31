@@ -56,8 +56,8 @@ EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'Abobus89@yandex.ru'
-EMAIL_HOST_PASSWORD = 'biasvtjlfxfotzic'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
